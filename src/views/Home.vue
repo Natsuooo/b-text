@@ -1,13 +1,13 @@
 <template>
-  <HelloWorld />
+  <LoginBar />
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld';
+import LoginBar from '../components/LoginBar';
 
 export default {
   components: {
-    HelloWorld,
+    LoginBar,
   },
 };
 </script>
