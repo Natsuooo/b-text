@@ -33,13 +33,35 @@
                     block
                     large
                     @click.stop="dialog = true"
-                    style="margin-bottom: 40px;"
+                    class="mb-5"
                   >
-                    大学名を選択
+                    大学/キャンパス名を選択
                   </v-btn>
                   
-                  <span>大学/キャンパス名: {{ selected }}</span>
-
+                  <v-text-field
+                    :rules="universityRules"
+                    label="大学/キャンパス名"
+                    readonly
+                    required
+                    outlined
+                    color="green accent-4"  
+                    v-bind:value="university"
+                  ></v-text-field>
+<!--
+                  <span class="grey--text text--darken-1 subtitle-2">大学/キャンパス名</span><br>
+                  <span>{{ university }}</span>
+-->
+                   
+<!--
+                   <input 
+                     type="hidden" 
+                     name="university"
+                     v-bind:value="university"
+                     required
+                     :rules="universityRules"
+                   >
+-->
+                    
                   <v-dialog
                     v-model="dialog"
                   >
@@ -54,7 +76,10 @@
                           >
                             あ
                           </v-btn>
-                          <v-btn text>
+                          <v-btn 
+                            text
+                            @click="dialog2=true, dialog=false"
+                          >
                             い
                           </v-btn>
                           <v-btn text>
@@ -98,28 +123,55 @@
                       <v-divider></v-divider>
                       <v-card-text>
                         <v-list>
-                          <v-list-item-group>
-                            <v-list-item>専門学校アースビジネスカレッジ</v-list-item>
+                          <v-list-item-group v-for="item in universities1">
+                            <v-list-item @click="dialog1=false; select(item.name);">{{ item.name }}</v-list-item>
                           </v-list-item-group>
                         </v-list>
-                      <select v-model="selected" multiple @click="dialog1=false">
-                        <option>専門学校アースビジネスカレッジ</option>
-                        <option>アーツカレッジヨコハマ</option>
-                        <option>アーツサウンドビジュアル専門学校</option>
-                        <option>アーデントビューティカレッジ</option>
-                        <option>専門学校アートカレッジ神戸</option>
-                        <option>アール医療福祉専門学校</option>
-                        <option>RKC調理製菓専門学校</option>
-                      </select>
                       </v-card-text>
                     </v-card>
                   </v-dialog>
+                  
+                  <v-dialog
+                    v-model="dialog2"
+                  >
+                    <v-card>
+                      <v-card-title class="title">
+                        「い」で始まる大学/キャンパス一覧
+                      </v-card-title>
+                      <v-divider></v-divider>
+                      <v-card-text>
+                        <v-list>
+                          <v-list-item-group>
+                            <v-list-item @click="dialog2=false; select('育英大学');">育英大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('石川県立看護大学');">石川県立看護大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('石川県立大学');">石川県立大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('石巻専修大学');">石巻専修大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('一宮研伸大学');">一宮研伸大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('茨城県立医療大学');">茨城県立医療大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('茨城キリスト教大学');">茨城キリスト教大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('茨城大学/水戸キャンパス');">茨城大学/水戸キャンパス</v-list-item>
+                            <v-list-item @click="dialog2=false; select('茨城大学/阿見キャンパス');">茨城大学/阿見キャンパス</v-list-item>
+                            <v-list-item @click="dialog2=false; select('茨城大学/日立キャンパス');">茨城大学/日立キャンパス</v-list-item>
+                            <v-list-item @click="dialog2=false; select('医療創生大学');">医療創生大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('いわき明星大学');">いわき明星大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('岩手医科大学');">岩手医科大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('岩手県立大学');">岩手県立大学</v-list-item>
+                            <v-list-item @click="dialog2=false; select('岩手大学/上田キャンパス');">岩手大学/上田キャンパス</v-list-item>
+                            <v-list-item @click="dialog2=false; select('岩手大学/釜石キャンパス');">岩手大学/釜石キャンパス</v-list-item>
+                            <v-list-item @click="dialog2=false; select('岩手保険医療大学');">岩手保険医療大学</v-list-item>
+                          </v-list-item-group>
+                        </v-list>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+                  
+                  
                   
                   <v-btn 
                     block
                     large
                     color="green accent-4"
-                    class="mr-4 white--text" 
+                    class="mr-4 white--text mt-2" 
                     @click="submit"
                     :disabled="!valid"
                   >
@@ -151,6 +203,14 @@
       dialog3: false,
       dialog4: false,
       dialog5: false,
+      university: '',
+      universities1:[
+        { name: '愛国学園大学' },
+        { name: '愛知医科大学' },
+      ],
+      universityRules: [
+        v => !!v || '大学/キャンパス名の記入は必須です。',
+      ],
     }),
     components: {
       LoginBar,
@@ -159,6 +219,9 @@
     methods:{
       emailMatchError(){
         return (this.password===this.passwordConfirmation) ? '' : 'パスワードと一致しません。'
+      },
+      select: function(selectedUniversity){
+        this.university=selectedUniversity
       }
     }
   };
