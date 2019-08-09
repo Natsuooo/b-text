@@ -5,9 +5,11 @@ import Signup from './views/Signup.vue'
 import SignupDetail from './views/SignupDetail.vue'
 import Login from './views/Login.vue'
 
+import store from './store'
+
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -40,4 +42,29 @@ export default new Router({
       component: Login
     },
   ]
-})
+});
+
+router.beforeEach((to, from, next)=>{
+  if(to.name==="home"){
+    if(store.state.isLogin){
+      if(store.state.userDetail.is_signup_detail){
+        next();
+      }else{
+        next('/signup/detail');
+      }
+      
+    }else{
+      next('/login');
+    }
+  }else if(to.name==="signupDetail"){
+    if(store.state.userDetail.is_signup_detail){
+      next('/');
+    }else{
+      next();
+    }
+  }else{
+    next();
+  }
+});
+
+export default router;

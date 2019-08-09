@@ -4,7 +4,7 @@
       <v-flex xs12 sm6>
         <v-card class="pa-5 ma-5">
           <v-img
-            :src="require('../assets/favicon_520_transparent.png')"
+            :src="require('../assets/images/favicon_520_transparent.png')"
             class="my-3"
             contain
             height="70"
@@ -18,21 +18,21 @@
               <v-layout wrap>
                 <v-flex
                   xs12
-                  md4
                 >
-<!--
-                  <v-btn 
+                 
+                   <v-btn 
                     depressed 
                     large
                     block
                     outlined
                     color="grey darken-1"
-                    class="mb-5"
+                    class="mb-5 text-capitalize"
                     @click="facebookSignUp"
                   >
+                    <img src="../assets/images/facebook_icon.png" width="20" class="mr-2">
                     Facebookで続行
                   </v-btn>
--->
+                 
                   <v-btn 
                     depressed 
                     large
@@ -42,7 +42,7 @@
                     class="mb-5 text-capitalize"
                     @click="twitterSignUp"
                   >
-                    <img src="../assets/twitter_icon.jpg" alt="Twitter" width="20" class="mr-2">
+                    <img src="../assets/images/twitter_icon.jpg" alt="Twitter" width="20" class="mr-2">
                     Twitterで続行
                   </v-btn>
                   <v-btn 
@@ -54,7 +54,7 @@
                     class="mb-5 text-capitalize"
                     @click="googleSignUp"
                   >
-                    <img src="../assets/google_icon.jpg" alt="Google" width="20" class="mr-3">
+                    <img src="../assets/images/google_icon.jpg" alt="Google" width="20" class="mr-3">
                     Googleで続行
                   </v-btn>
                   <p class="text-center">または</p>
@@ -117,19 +117,20 @@
       email: '',
       emailRules: [
         v => !!v || 'Emailの記入は必須です。',
-        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || '無効なメールアドレスです。',
+        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || '適切な形式のメールアドレスを記入して下さい。',
       ],
       password: '',
       passwordRules: [
         v => !!v || 'パスワードの記入は必須です。',
-        v => v.length >= 6 || '6文字以上のパスワードを作成して下さい。',
+        v => (v && v.length >= 6) || '6文字以上のパスワードを作成して下さい。',
       ],
       passwordConfirmation: '',
       passwordConfirmationRules: [
         v => !!v || '確認用パスワードの記入は必須です。',
 //        v => v === this.password || 'パスワードと一致しません。',
       ],
-      
+      userDetail: {},
+      uid: '',
     }),
     components: {
       LoginBar,
@@ -139,21 +140,33 @@
       emailMatchError(){
         return (this.password===this.passwordConfirmation) ? '' : 'パスワードと一致しません。'
       },
+      setUserDetail(){
+        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+          .then(res=>{
+            this.userDetail=res.data;
+            this.$store.commit('setUserDetail', this.userDetail);
+            if(this.userDetail.is_signup_detail){
+              this.$router.push('/');
+            }else{
+              this.$router.push('/signup/detail')
+            }
+
+        }); this.$router.push('/signup/detail');
+      },
       signUp: function(){
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-          .then(user=>{
-            this.$router.push('/signup/detail');
+          .then(obj=>{
+            this.uid=obj.user.uid;
+            this.setUserDetail();
           })
-          .catch(error=>{
-            alert(error.message)
-          })
+          .catch(error=>alert(error.message))
       },
       googleSignUp: function(){
         var provider=new firebase.auth.GoogleAuthProvider()
         firebase.auth().signInWithPopup(provider)
           .then(obj=>{
-//            alert('Create account: '+obj.user.displayName)
-            this.$router.push('/signup/detail');
+            this.uid=obj.user.uid;
+            this.setUserDetail();
           })
           .catch(error=>alert(error.message))
       },
@@ -161,24 +174,20 @@
         var provider=new firebase.auth.TwitterAuthProvider()
         firebase.auth().signInWithPopup(provider)
           .then(obj=>{
-//            alert('Create account: '+obj.user.displayName)
-            this.$router.push('/signup/detail');
+            this.uid=obj.user.uid;
+            this.setUserDetail();
           })
           .catch(error=>alert(error.message))
       },
-//      facebookSignUp: function(){
-//        var provider = new firebase.auth.FacebookAuthProvider();
-//        provider.addScope('user_birthday');
-//        firebase.auth().languageCode = 'ja';
-//        provider.setCustomParameters({
-//          'display': 'popup'
-//        });
-//        firebase.auth().signInWithPopup(provider)
-//          .then(obj=>{
-//            alert('create account: '+obj.user.displayname)
-//          })
-//          .catch(error=>alert(error.message))
-//      }
+      facebookSignUp: function(){
+        var provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+          .then(obj=>{
+            this.uid=obj.user.uid;
+            this.setUserDetail();
+          })
+          .catch(error=>alert(error.message))
+      }
     }
   };
 </script>

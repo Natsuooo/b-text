@@ -4,7 +4,7 @@
       <v-flex xs12 sm6>
         <v-card class="pa-5 ma-5">
           <v-img
-            :src="require('../assets/favicon_520_transparent.png')"
+            :src="require('../assets/images/favicon_520_transparent.png')"
             class="my-3"
             contain
             height="70"
@@ -18,8 +18,45 @@
               <v-layout wrap>
                 <v-flex
                   xs12
-                  md4
                 >
+                  <v-btn 
+                    depressed 
+                    large
+                    block
+                    outlined
+                    color="grey darken-1"
+                    class="mb-5 text-capitalize"
+                    @click="facebookSignUp"
+                  >
+                    <img src="../assets/images/facebook_icon.png" width="20" class="mr-2">
+                    Facebookでログイン
+                  </v-btn>
+                 
+                  <v-btn 
+                    depressed 
+                    large
+                    block
+                    outlined
+                    color="grey darken-1"
+                    class="mb-5 text-capitalize"
+                    @click="twitterSignUp"
+                  >
+                    <img src="../assets/images/twitter_icon.jpg" width="20" class="mr-2">
+                    Twitterでログイン
+                  </v-btn>
+                  <v-btn 
+                    depressed 
+                    large
+                    block
+                    outlined
+                    color="grey darken-1"
+                    class="mb-5 text-capitalize"
+                    @click="googleSignUp"
+                  >
+                    <img src="../assets/images/google_icon.jpg" width="20" class="mr-3">
+                    Googleでログイン
+                  </v-btn>
+                  <p class="text-center">または</p>
                   <v-text-field
                     v-model="email"
                     :rules="emailRules"
@@ -40,9 +77,10 @@
                   <v-btn 
                     block
                     large
+                    :disabled="!valid"
                     color="green accent-4"
                     class="mr-4 white--text" 
-                    @click="submit"
+                    @click="login"
                   >
                     ログイン
                   </v-btn>
@@ -61,31 +99,100 @@
 
 <script>
   import LoginBar from '../components/LoginBar';
+  import firebase from 'firebase';
 
   export default {
+    title: 'ログイン',
     data: () => ({
       valid: false,
       email: '',
       emailRules: [
         v => !!v || 'Emailの記入は必須です。',
-        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || '無効なメールアドレスです。',
+        v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || '適切な形式のメールアドレスを記入して下さい。',
       ],
       password: '',
       passwordRules: [
         v => !!v || 'パスワードの記入は必須です。',
-        v => v.length >= 6 || '6文字以上のパスワードを作成して下さい。',
       ],
+      uid: '',
+      userDetail: {},
     }),
     components: {
       LoginBar,
     },
-    title: '新規登録',
     methods:{
       emailMatchError(){
         return (this.password===this.passwordConfirmation) ? '' : 'パスワードと一致しません。'
+      },
+      setUserDetail(){
+        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+          .then(res=>{
+            this.userDetail=res.data;
+            this.$store.commit('setUserDetail', this.userDetail);
+            if(this.userDetail.is_signup_detail){
+              this.$router.push('/');
+            }else{
+              this.$router.push('/signup/detail')
+            }
+
+          });
+      },
+      login(){
+        firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+          .then(obj=>{
+            this.uid=obj.user.uid;
+            this.setUserDetail();
+            })
+          .catch(error=>alert(error.message))
+      },
+      googleSignUp(){
+        var provider=new firebase.auth.GoogleAuthProvider()
+        firebase.auth().signInWithPopup(provider)
+          .then(obj=>{
+            this.uid=obj.user.uid;
+            this.setUserDetail();
+            })
+          .catch(error=>alert(error.message))
+      },
+      twitterSignUp(){
+        var provider=new firebase.auth.TwitterAuthProvider()
+        firebase.auth().signInWithPopup(provider)
+          .then(obj=>{
+            this.uid=obj.user.uid;
+            this.setUserDetail();
+            })
+          .catch(error=>alert(error.message))
+      },
+      facebookSignUp(){
+        var provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithPopup(provider)
+          .then(obj=>{
+            this.uid=obj.user.uid;
+            this.setUserDetail();
+            })
+          .catch(error=>alert(error.message))
       }
-    }
+    },
+    created() {
+//      var user=firebase.auth().currentUser;
+//      if (user) {
+//        this.name = user.displayName;
+//        this.photoURL = user.photoURL;
+//        if(user.photoURL){
+//          this.isPhotoURL = true
+//        }
+//        this.uid = user.uid;
+//        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+//        .then(res=>{
+//          this.userInfo=res.data;
+//          this.is_signup=res.data.is_signup;
+//          if(this.is_signup){
+//            this.$router.push('/');
+//          }
+//        });
+//      } else {
+//        this.$router.push('/signup');
+//      }
+    },
   };
 </script>
-
-

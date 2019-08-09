@@ -1,6 +1,6 @@
 <template>
 <v-app-bar app elevate-on-scroll>
-  <img src="../assets/favicon_520_transparent.png" alt="B-text" width="25" class="mr-2">
+  <img src="../assets/images/favicon_520_transparent.png" alt="B-text" width="25" class="mr-2">
   <v-toolbar-title class="title">
     <span style="font-family: 'Comfortaa', cursive!important;">B-text</span>
   </v-toolbar-title>
