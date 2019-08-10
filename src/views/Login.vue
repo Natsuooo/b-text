@@ -2,7 +2,7 @@
   <v-content>
     <v-layout justify-center>
       <v-flex xs12 sm6>
-        <v-card class="pa-5 ma-5">
+        <v-card class="pa-5">
           <v-img
             :src="require('../assets/images/favicon_520_transparent.png')"
             class="my-3"

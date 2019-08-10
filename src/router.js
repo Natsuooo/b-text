@@ -4,6 +4,12 @@ import Home from './views/Home.vue'
 import Signup from './views/Signup.vue'
 import SignupDetail from './views/SignupDetail.vue'
 import Login from './views/Login.vue'
+import Favorites from './views/Favorites.vue'
+import Sell from './views/Sell.vue'
+import Messages from './views/Messages.vue'
+import MyPage from './views/MyPage.vue'
+import MyBooks from './views/MyBooks.vue'
+import User from './views/User.vue'
 
 import store from './store'
 
@@ -41,11 +47,41 @@ var router = new Router({
       name: 'login',
       component: Login
     },
+    {
+      path: '/sell',
+      name: 'sell',
+      component: Sell
+    },
+    {
+      path: '/messages',
+      name: 'messages',
+      component: Messages
+    },
+    {
+      path: '/mypage',
+      name: 'mypage',
+      component: MyPage
+    },
+    {
+      path: '/mypage/books',
+      name: 'mybooks',
+      component: MyBooks
+    },
+    {
+      path: '/mypage/favorites',
+      name: 'favorites',
+      component: Favorites
+    },
+    {
+      path: '/mypage/user',
+      name: 'user',
+      component: User
+    }
   ]
 });
 
 router.beforeEach((to, from, next)=>{
-  if(to.name==="home"){
+  if(to.name==="mypage"){
     if(store.state.isLogin){
       if(store.state.userDetail.is_signup_detail){
         next();

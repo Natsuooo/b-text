@@ -1,12 +1,11 @@
 <template>
   <v-content>
     <v-layout justify-center>
-      <LoginBar v-if="!isLogin"/>
-      <v-flex xs12 sm6>
-      <v-btn @click="logout">ログアウト</v-btn>
+      <MyPageTabs/>
+      <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;">
+        
       </v-flex>
-      <NavBar v-if="isLogin"/>
-      
+      <NavBar/>
     </v-layout>
   </v-content>
 </template>
@@ -15,16 +14,23 @@
   import LoginBar from '../components/LoginBar';
   import firebase from 'firebase';
   import NavBar from '../components/NavBar';
+  import MyPageTabs from '../components/MyPageTabs';
 
   export default {
-    title: 'ホーム',
+    title: 'マイページ',
     data: () => ({
-//      bottomNav: 'home',
       isLogin: false,
+      user: {},
+      userDetail: {},
+      username: '',
+      university: '',
+      photoURL: '',
+      profile_image: '',
     }),
     components: {
       LoginBar,
       NavBar,
+      MyPageTabs,
     },
     methods:{
       logout(){
@@ -40,33 +46,18 @@
         this.$store.commit('setUserDetail', {});
         this.$router.push('/login');
       },
-//      changeTabs(num){
-//        this.isActive=num;
-//      }
+      updateProfile(){
+        
+      }
     },
     created() {
-//      var user=firebase.auth().currentUser;
-//      if (user) {
-//        this.name = user.displayName;
-//        this.photoURL = user.photoURL;
-//        if(user.photoURL){
-//          this.isPhotoURL = true
-//        }
-//        this.uid = user.uid;
-//        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
-//        .then(res=>{
-//          this.userInfo=res.data;
-//          this.is_signup=res.data.is_signup;
-//          if(this.is_signup){
-//            this.$router.push('/');
-//          }
-//        });
-//      } else {
-////        this.$router.push('/signup');
-//      }
       this.isLogin=this.$store.getters.isLogin;
+      this.user=this.$store.getters.user;
+      this.userDetail=this.$store.getters.userDetail;
+      this.username=this.userDetail.username;
+      this.university=this.userDetail.university;
     },
-//    computed: {
+    computed: {
 //      user(){
 //        return this.$store.getters.user;
 //      },
@@ -76,7 +67,7 @@
 //      userDetail(){
 //        return this.$store.getters.userDetail;
 //      }
-//    }
+    }
   };
 </script>
 
