@@ -3,21 +3,58 @@
   <v-layout justify-center>
     <MyPageTabs/>
     <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;">
-      <p>お気に入り</p>
+      
+      <v-container v-if="likedBooks">
+        <v-card 
+         v-for="(likedBook, index) in likedBooks" :key='likedBook.id'
+         class="mb-3"
+         >
+         {{isPublic()}}
+          <v-layout>
+            <v-flex xs4 class="pa-2" @click="toBookDetail(likedBooks.id);">
+              <v-img v-if="likedBook.google_image" :src="likedBook.google_image"></v-img>
+              <v-img v-if="likedBook.original_image" :src="originalImagePath(likedBook.original_image)"></v-img>
+            </v-flex>
+            <v-flex xs8>
+              <v-card-title class="subtitle-1 pt-2" @click="toBookDetail(likedBook.id);">{{likedBook.title}}</v-card-title>
+              <v-card-text @click="toBookDetail(likedBook.id);">
+                <span class="text--primary body-1">{{likedBook.price}}円</span><br>
+                <span class="caption"> 出品日: {{likedBook.updated_at.slice(0, 10)}}</span>
+              </v-card-text>
+              <v-card-actions style="margin-top: -20px; margin-left: 5px;">
+                <v-btn 
+                  class="body-2" 
+                  dark
+                  small
+                  color="green accent-4"
+                  @click="deleteLike(likedBook.id, index);">
+                  削除する
+                </v-btn>
+              </v-card-actions>
+            </v-flex>
+          </v-layout>
+        </v-card>
+        
+      </v-container>
+      
+      <v-layout v-else justify-center style="margin-top: 30px; margin-bottom: 20px;">
+        <v-subheader>お気に入りに登録した本はありません。</v-subheader>
+      </v-layout>
+      
+      
     </v-flex>
-    <NavBar/>
+    <NavBar tab="favorites" tabMessages="sell"/>
   </v-layout>
   </v-content>
 </template>
 
 <script>
-  import LoginBar from '../components/LoginBar';
   import firebase from 'firebase';
   import NavBar from '../components/NavBar';
   import MyPageTabs from '../components/MyPageTabs';
 
   export default {
-    title: 'マイページ',
+    title: 'お気に入り',
     data: () => ({
       isLogin: false,
       user: {},
@@ -26,28 +63,63 @@
       university: '',
       photoURL: '',
       profile_image: '',
+      dialog: false,
+      props_test: "test",
+      newBook: '',
+      user_id: '',
+      likedBooks: {},
+      dialog: false,
+      google_image: '',
+      original_image: '',
+      title: '',
+      state: '',
+      price: '',
+      note: '',
+      updated_at: '',
+      id: '',
+      is_public: false,
+      finishedDialog: false,
+      is_finished: false,
     }),
     components: {
-      LoginBar,
       NavBar,
       MyPageTabs,
     },
     methods:{
-      logout(){
+      getLikedBooks(){
+        this.$axios.get('http://localhost:8080/likes/books', {params: {user_id: this.user_id}})
+          .then(res=>{
+            this.likedBooks=res.data;
+          });
+      },
+      originalImagePath(original_image){
+        return "http://localhost:8080/book_images/"+original_image
+      },
+      isPublic(){
+        this.is_public=true;
+      },
+      isFinished(){
+        this.is_finished=true;
+      },
+      restartSelling(id){
+        this.finishedDialog=false;
+        this.$axios.put('http://localhost:8080/restart_selling?id='+id);
+      },
+      toBookDetail(id){
+        this.$router.push({name: 'bookdetail', params: {id: id}});
+      },
+      deleteLike(book_id, index){
+        this.likedBooks.splice(index, 1);
         var formData=new FormData();
-        formData.append("uid", this.uid)
+        formData.append("user_id", this.userDetail.id);
+        formData.append("book_id", book_id);
         var config={
           headers:{
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/logout', formData, config);
-        firebase.auth().signOut();
-        this.$store.commit('setUserDetail', {});
-        this.$router.push('/login');
-      },
-      updateProfile(){
-
+        this.$axios
+          .post('http://localhost:8080/likes/delete', formData, config);
       }
     },
     created() {
@@ -56,17 +128,10 @@
       this.userDetail=this.$store.getters.userDetail;
       this.username=this.userDetail.username;
       this.university=this.userDetail.university;
+      this.user_id=this.userDetail.id
+      this.getLikedBooks();
     },
-    computed: {
-      //      user(){
-      //        return this.$store.getters.user;
-      //      },
-      //      isLogin(){
-      //        return this.$store.getters.isLogin;
-      //      },
-      //      userDetail(){
-      //        return this.$store.getters.userDetail;
-      //      }
+    updated(){
     }
   };
 </script>

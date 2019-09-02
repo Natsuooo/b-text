@@ -128,8 +128,9 @@
         this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
           .then(res=>{
             this.userDetail=res.data;
-            this.$store.commit('setUserDetail', this.userDetail);
+          this.$store.commit('setUserDetail', this.userDetail);
             if(this.userDetail.is_signup_detail){
+              console.log(this.userDetail);
               this.$router.push('/');
             }else{
               this.$router.push('/signup/detail')
@@ -174,25 +175,7 @@
       }
     },
     created() {
-//      var user=firebase.auth().currentUser;
-//      if (user) {
-//        this.name = user.displayName;
-//        this.photoURL = user.photoURL;
-//        if(user.photoURL){
-//          this.isPhotoURL = true
-//        }
-//        this.uid = user.uid;
-//        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
-//        .then(res=>{
-//          this.userInfo=res.data;
-//          this.is_signup=res.data.is_signup;
-//          if(this.is_signup){
-//            this.$router.push('/');
-//          }
-//        });
-//      } else {
-//        this.$router.push('/signup');
-//      }
+      
     },
   };
 </script>

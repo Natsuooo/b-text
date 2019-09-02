@@ -10,6 +10,11 @@ import Messages from './views/Messages.vue'
 import MyPage from './views/MyPage.vue'
 import MyBooks from './views/MyBooks.vue'
 import User from './views/User.vue'
+import BookDetail from './views/BookDetail.vue'
+import UserDetail from './views/UserDetail.vue'
+import MessagesUsers from './views/MessagesUsers.vue'
+import MessagesMyBooks from './views/MessagesMyBooks.vue'
+import MessagesBuy from './views/MessagesBuy.vue'
 
 import store from './store'
 
@@ -53,9 +58,9 @@ var router = new Router({
       component: Sell
     },
     {
-      path: '/messages',
-      name: 'messages',
-      component: Messages
+      path: '/messages/sell',
+      name: 'messagesmybooks',
+      component: MessagesMyBooks
     },
     {
       path: '/mypage',
@@ -76,6 +81,31 @@ var router = new Router({
       path: '/mypage/user',
       name: 'user',
       component: User
+    },
+    {
+      path: '/books/:id',
+      name: 'bookdetail',
+      component: BookDetail
+    },
+    {
+      path: '/users/:id',
+      name: 'userdetail',
+      component: UserDetail
+    },
+    {
+      path: '/messages/sell/:book_id',
+      name: 'messagesUsers',
+      component: MessagesUsers
+    },
+    {
+      path: '/messages/private/:book_id/:user_id',
+      name: 'messages',
+      component: Messages
+    },
+    {
+      path: '/messages/buy',
+      name: 'messagesbuy',
+      component: MessagesBuy
     }
   ]
 });

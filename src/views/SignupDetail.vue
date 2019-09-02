@@ -127,6 +127,7 @@
         userInfo: '',
         is_signup: true,
         userDetail: {},
+        sns_image: '',
       }
     },
     components: {
@@ -145,6 +146,7 @@
         var university=this.university;
         var user = firebase.auth().currentUser;
         var uid=user.uid;
+        this.uid=uid;
         
         if(!this.isProfileImageUploaded){
           var formData=new FormData();
@@ -158,15 +160,12 @@
               'content-type': 'multipart/form-data'
             }
           };
-          this.$axios.post('http://localhost:8080/signup_with_img', formData, config);
-          this.userDetail={
-            uid: uid,
-            university: university,
-            username: username,
-            profile_image: uid+this.$refs.file.files[0].name,
-            is_signup_detail: true
-          }
-          this.$router.push('/');
+          this.$axios.post('http://localhost:8080/signup_with_img', formData, config).then(res=>{
+            console.log("called");
+            this.setUserDetail();
+          })
+          
+          
         }else{
           var formData=new FormData();
           formData.append("uid", uid);
@@ -175,26 +174,22 @@
           var profile_image='';
           if(this.isPhotoURL){
             profile_image='sns';
+            this.sns_image=this.photoURL;
           }else{
             profile_image='default';
           }
           formData.append("profile_image", profile_image)
+          formData.append("sns_image", this.sns_image)
           var config={
             headers:{
               'content-type': 'multipart/form-data'
             }
           };
           this.$axios
-            .post('http://localhost:8080/signup', formData, config);
-          this.userDetail={
-            uid: uid,
-            university: university,
-            username: username,
-            profile_image: profile_image,
-            is_signup_detail: true
-          }
-          this.$store.commit('setUserDetail', this.userDetail);
-          this.$router.push('/');
+            .post('http://localhost:8080/signup', formData, config).then(res=>{
+            this.setUserDetail();
+          })
+          
         }
       },
       onFileChange(e){
@@ -211,6 +206,21 @@
       },
       selectUniversity(university){
         this.university=university;
+      },
+      setUserDetail(){
+        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+          .then(res=>{
+            this.userDetail=res.data;
+          
+           console.log(this.userDetail);
+          this.$store.commit('setUserDetail', this.userDetail);
+            if(this.userDetail.is_signup_detail){
+              this.$router.push('/');
+            }else{
+              this.$router.push('/signup/detail')
+            }
+
+          });
       },
     },
     created() {

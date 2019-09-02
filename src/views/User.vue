@@ -3,6 +3,11 @@
   <v-layout justify-center>
     <MyPageTabs/>
     <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;" class="pa-5">
+     
+      <v-alert type="success" v-if="isUpdated" class="mt-0 mb-8">
+        ユーザー情報を変更しました。
+      </v-alert>
+     
       <v-text-field
         v-model="username"        
         label="ユーザー名"
@@ -15,7 +20,7 @@
       
 
       <span
-        v-if="uploadedImage"
+        v-if="profile_image!='sns'&&profile_image!='default'"
         @click="$refs.file.click();" style="cursor: pointer; position: relative;">
         <v-icon style="position: absolute; z-index: 5; margin-left: 11px; margin-top: 11px; opacity: 0.8">mdi-camera</v-icon>
         <v-avatar 
@@ -32,7 +37,7 @@
         <v-icon style="position: absolute; z-index: 5; margin-left: 11px; margin-top: 11px; opacity: 0.8">mdi-camera</v-icon>
         <v-avatar 
          style="opacity: 0.7;">
-          <img v-if="photoURL" :src="photoURL">
+          <img v-if="profile_image=='sns'" :src="photoURL">
           <img v-else :src="require('../assets/images/account.svg')">
 <!--          <img v-else :src="require('../assets/images/account.svg')">-->
         </v-avatar>
@@ -58,8 +63,6 @@
         v-show="university"
       ></v-text-field>
       
-      <p>評価</p>
-      
       <v-btn 
         block
         large
@@ -70,15 +73,16 @@
         変更を保存する
       </v-btn>
       
+      
       <v-btn 
         @click="logout"
         block
-        style="margin-top: 50px;"
+        style="margin-top: 20px;"
         >
         ログアウト
       </v-btn>
     </v-flex>
-    <NavBar/>
+    <NavBar tab="user" tabMessages="sell"/>
   </v-layout>
 </v-content>
 </template>
@@ -105,6 +109,8 @@
         value => !value || value.size < 2000000 || '2MB以下の画像を使用して下さい。',
       ],
       uploadedImage: '',
+      isProfileImageUploaded: false,
+      isUpdated: false,
     }),
     components: {
       LoginBar,
@@ -124,10 +130,43 @@
         this.$axios.post('http://localhost:8080/logout', formData, config);
         firebase.auth().signOut();
         this.$store.commit('setUserDetail', {});
+        console.log(this.userDetail);
         this.$router.push('/login');
       },
       updateProfile(){
-
+        
+        if(this.isProfileImageUploaded){
+          var formData=new FormData();
+          this.file = this.$refs.file.files[0];
+          formData.append("profile_image", this.file);
+          formData.append("username", this.username);
+          formData.append("university", this.university);
+          formData.append("user_id", this.userDetail.id);
+          formData.append("uid", this.userDetail.uid);
+          var config={
+            headers:{
+              'content-type': 'multipart/form-data'
+            }
+          };
+          this.$axios.post('http://localhost:8080/users/update_with_img', formData, config).then(res=>{
+            this.setUserDetail(this.userDetail.id);
+          });
+        }else{
+          var formData=new FormData();
+          formData.append("username", this.username);
+          formData.append("university", this.university);
+          formData.append("user_id", this.userDetail.id);
+          var config={
+            headers:{
+              'content-type': 'multipart/form-data'
+            }
+          };
+          this.$axios
+            .post('http://localhost:8080/users/update', formData, config).then(res=>{
+              this.setUserDetail(this.userDetail.id);
+            });
+        }
+        this.isUpdated=true;
       },
       selectUniversity(university){
         this.university=university;
@@ -135,7 +174,7 @@
       onFileChange(e){
         var files=e.target.files || e.dataTransfer.files;
         this.createImage(files[0]);
-        this.isProfileImageUploaded=false;
+        this.isProfileImageUploaded=true;
       },
       createImage(file){
         let reader=new FileReader();
@@ -143,29 +182,26 @@
           this.uploadedImage=e.target.result;
         };
         reader.readAsDataURL(file);
-      }
+      },
+      setUserDetail(user_id){
+        this.$axios.get('http://localhost:8080/get_user', {params: {id: user_id}})
+          .then(res=>{
+            this.userDetail=res.data;
+           this.$store.commit('setUserDetail', this.userDetail);
+          });
+      },
     },
     created() {
       this.isLogin=this.$store.getters.isLogin;
       this.user=this.$store.getters.user;
       this.userDetail=this.$store.getters.userDetail;
-      console.log(this.userDetail);
       this.username=this.userDetail.username;
       this.university=this.userDetail.university;
-      this.photoURL=this.user.photoURL;
+      this.photoURL=this.userDetail.sns_image;
       this.profile_image=this.userDetail.profile_image;
+      
+      this.uploadedImage="http://localhost:8080/users/"+this.userDetail.profile_image;
     },
-    computed: {
-      //      user(){
-      //        return this.$store.getters.user;
-      //      },
-      //      isLogin(){
-      //        return this.$store.getters.isLogin;
-      //      },
-      //      userDetail(){
-      //        return this.$store.getters.userDetail;
-      //      }
-    }
   };
 </script>
 
