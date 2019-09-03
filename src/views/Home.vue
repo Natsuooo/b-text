@@ -2,11 +2,22 @@
   <v-content>
     <v-layout justify-center>
       <LoginBar v-if="!isLogin"/>
-      <v-flex xs12 sm6>
+      <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;">
+        <img src="../assets/images/favicon_520_transparent.png" alt="B-text" width="30" class="mr-2">
+        <v-text-field
+          hide-details
+          append-icon="mdi-magnify"
+          single-line
+          label="本のタイトルから検索"
+          class="ml-2"
+          v-model="keyword"
+        ></v-text-field>
+      </v-toolbar>
+      <v-flex xs12 sm6 class="mt-12 mb-12">
         <v-container fluid>
           <v-row>
             <v-col 
-             v-for="book in books" :key='book.id' 
+             v-for="book in search" :key='book.id' 
              cols="4" 
              class="pa-0" 
              style="position: relative;">
@@ -29,6 +40,9 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-layout v-if="!search" justify-center style="margin-top: 50px; margin-bottom: 20px;">
+          <v-subheader>お探しの本は見つかりませんでした。</v-subheader>
+        </v-layout>
       </v-flex>
       <NavBar v-if="isLogin" tab="books" tabMessages="sell"/>
       
@@ -65,6 +79,8 @@
       like: {},
       likes:[],
       array: [],
+      keyword: '',
+      isSearchedBooks: true,
     }),
     components: {
       LoginBar,
@@ -72,13 +88,13 @@
     },
     methods:{
       getBooks(){
-        this.$axios.get('http://localhost:8080/books', {params: {university: this.university}})
+        this.$axios.get('https://b-text-api.herokuapp.com/books', {params: {university: this.university}})
           .then(res=>{
             this.books=res.data
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       bookDetail(id){
         this.$router.push({name: 'bookdetail', params: {id: id}});
@@ -99,7 +115,7 @@
             }
           };
           this.$axios
-            .post('http://localhost:8080/likes/register', formData, config);
+            .post('https://b-text-api.herokuapp.com/likes/register', formData, config);
         }
       },
       deleteLike(book_id, liked){
@@ -120,7 +136,7 @@
             }
           };
           this.$axios
-            .post('http://localhost:8080/likes/delete', formData, config);
+            .post('https://b-text-api.herokuapp.com/likes/delete', formData, config);
         }
       },
       isLiked(book_id){
@@ -131,7 +147,7 @@
         }
       },
       getLikes(){
-        this.$axios.get('http://localhost:8080/likes', {params: {user_id: this.userDetail.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/likes', {params: {user_id: this.userDetail.id}})
           .then(res=>{
             this.likes=res.data;
             this.getLikedBooks(this.likes);
@@ -145,7 +161,23 @@
         });
         this.array=array;
         }
-      }
+      },
+    },
+    computed: {
+      search(){
+        var books=[];
+        for(var i in this.books){
+          var book=this.books[i];
+          if(book.title.indexOf(this.keyword)!==-1||book.note.indexOf(this.keyword)!==-1){
+            books.push(book);
+          }
+        }
+        if(books.length==0){
+          return false;
+        }else{
+          return books;
+        }
+      },
     },
     created() {
       this.isLogin=this.$store.getters.isLogin;

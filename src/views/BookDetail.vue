@@ -59,7 +59,8 @@
                         <v-img 
                          v-else-if="uploadedImage"
                          :src="uploadedImage"></v-img>
-                         <img v-else :src="require('../assets/images/account.svg')">
+                         <img v-else :src="require('../assets/images/account.svg')"
+                         style="opacity: 0.7;">
                       </v-avatar>
                      {{otherUsersDetail.username}}
                    </v-container>
@@ -194,7 +195,7 @@
     },
     methods:{
       getBookDetail(){
-        this.$axios.get('http://localhost:8080/books/detail', {params: {id: this.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/books/detail', {params: {id: this.id}})
           .then(res=>{
             this.bookDetail=res.data;
             this.created_at=this.bookDetail.created_at.slice(0, 10);
@@ -205,13 +206,15 @@
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       getUser(id){
-        this.$axios.get('http://localhost:8080/get_user', {params: {id: id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/get_user', {params: {id: id}})
           .then(res=>{
             this.otherUsersDetail=res.data;
-            this.uploadedImage="http://localhost:8080/users/"+ this.otherUsersDetail.profile_image;
+            if(this.otherUsersDetail.profile_image!="default"){
+              this.uploadedImage="https://b-text-api.herokuapp.com/users/"+ this.otherUsersDetail.profile_image;
+            }
           });
       },
       toUserDetail(id){
@@ -245,7 +248,7 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/messages/send', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/messages/send', formData, config);
         this.requestMessage=true;
         scrollTo(0, 0);
       },
@@ -266,7 +269,7 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/stop_selling', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/stop_selling', formData, config);
         this.$router.push('/mypage/books');
       },
       restartSelling(book_id){
@@ -277,7 +280,7 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/restart_selling', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/restart_selling', formData, config);
         this.$router.push('/mypage/books');
       },
       registerLike(book_id, liked){
@@ -294,7 +297,7 @@
             }
           };
           this.$axios
-            .post('http://localhost:8080/likes/register', formData, config);
+            .post('https://b-text-api.herokuapp.com/likes/register', formData, config);
         }
       },
       deleteLike(book_id, liked){
@@ -315,7 +318,7 @@
             }
           };
           this.$axios
-            .post('http://localhost:8080/likes/delete', formData, config);
+            .post('https://b-text-api.herokuapp.com/likes/delete', formData, config);
         }
       },
       isLiked(book_id){
@@ -326,7 +329,7 @@
         }
       },
       getLikes(){
-        this.$axios.get('http://localhost:8080/likes', {params: {user_id: this.userDetail.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/likes', {params: {user_id: this.userDetail.id}})
           .then(res=>{
             this.likes=res.data;
             this.getLikedBooks(this.likes);

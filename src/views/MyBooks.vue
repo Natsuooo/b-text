@@ -120,13 +120,13 @@
     },
     methods:{
       getMyBooks(){
-        this.$axios.get('http://localhost:8080/mybooks', {params: {user_id: this.user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/mybooks', {params: {user_id: this.user_id}})
           .then(res=>{
             this.myBooks=res.data
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       bookDetail(id, google_image, original_image, title, state, price, note, created_at){
         this.dialog=true;
@@ -152,7 +152,7 @@
       },
       stopSelling(id){
         this.dialog=false;
-        this.$axios.put('http://localhost:8080/stop_selling?id='+id);
+        this.$axios.put('https://b-text-api.herokuapp.com/stop_selling?id='+id);
       },
       isPublic(){
         this.is_public=true;
@@ -162,7 +162,7 @@
       },
       restartSelling(id){
         this.finishedDialog=false;
-        this.$axios.put('http://localhost:8080/restart_selling?id='+id);
+        this.$axios.put('https://b-text-api.herokuapp.com/restart_selling?id='+id);
       },
       toBookDetail(id){
         this.$router.push({name: 'bookdetail', params: {id: id}});

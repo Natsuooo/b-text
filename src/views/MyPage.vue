@@ -41,7 +41,7 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/logout', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/logout', formData, config);
         firebase.auth().signOut();
         this.$store.commit('setUserDetail', {});
         this.$router.push('/login');

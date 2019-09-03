@@ -125,7 +125,7 @@
         return (this.password===this.passwordConfirmation) ? '' : 'パスワードと一致しません。'
       },
       setUserDetail(){
-        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+        this.$axios.get('https://b-text-api.herokuapp.com/user', {params: {uid: this.uid}})
           .then(res=>{
             this.userDetail=res.data;
           this.$store.commit('setUserDetail', this.userDetail);

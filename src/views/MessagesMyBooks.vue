@@ -75,13 +75,13 @@
     },
     methods:{
       getMyBooks(user_id){
-        this.$axios.get('http://localhost:8080/messages/mybooks', {params: {user_id: user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/messages/mybooks', {params: {user_id: user_id}})
           .then(res=>{
             this.myBooks=res.data
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       toMessagesUsers(book_id){
         this.$router.push('/messages/sell/'+book_id);

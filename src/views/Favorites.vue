@@ -87,13 +87,13 @@
     },
     methods:{
       getLikedBooks(){
-        this.$axios.get('http://localhost:8080/likes/books', {params: {user_id: this.user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/likes/books', {params: {user_id: this.user_id}})
           .then(res=>{
             this.likedBooks=res.data;
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       isPublic(){
         this.is_public=true;
@@ -103,7 +103,7 @@
       },
       restartSelling(id){
         this.finishedDialog=false;
-        this.$axios.put('http://localhost:8080/restart_selling?id='+id);
+        this.$axios.put('https://b-text-api.herokuapp.com/restart_selling?id='+id);
       },
       toBookDetail(id){
         this.$router.push({name: 'bookdetail', params: {id: id}});
@@ -119,7 +119,7 @@
           }
         };
         this.$axios
-          .post('http://localhost:8080/likes/delete', formData, config);
+          .post('https://b-text-api.herokuapp.com/likes/delete', formData, config);
       }
     },
     created() {

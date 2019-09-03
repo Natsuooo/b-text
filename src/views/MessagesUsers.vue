@@ -146,13 +146,13 @@
     },
     methods:{
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       back(){
         this.$router.go(-1);
       },
       getUsers(book_id){
-        this.$axios.get('http://localhost:8080/messages/users', {params: {book_id: book_id, user_id: this.userDetail.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/messages/users', {params: {book_id: book_id, user_id: this.userDetail.id}})
           .then(res=>{
             this.users=res.data
           console.log(this.users);
@@ -162,7 +162,7 @@
         this.$router.push('/messages/private/'+this.$route.params.book_id+'/'+user_id);
       },
       uploadedImage(profile_image){
-        return "http://localhost:8080/users/"+ profile_image;
+        return "https://b-text-api.herokuapp.com/users/"+ profile_image;
       },
       rate(to_user_id){
         this.dialog=false;
@@ -175,7 +175,7 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/rates/create', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/rates/create', formData, config);
         
       },
       updateRate(to_user_id){
@@ -189,11 +189,11 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/rates/update', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/rates/update', formData, config);
         
       },
       getRate(to_user_id){
-        this.$axios.get('http://localhost:8080/rates', {params: {from_user_id: this.userDetail.id, to_user_id: to_user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/rates', {params: {from_user_id: this.userDetail.id, to_user_id: to_user_id}})
           .then(res=>{
             this.rating=res.data.rating;
             if(res.data.rating){

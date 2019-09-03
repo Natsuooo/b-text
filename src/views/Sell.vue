@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-content style="margin-top: -15px;">
     <v-layout justify-center>
       <v-flex xs12 sm6 style="margin-bottom: 100px;" class="ma-3">
         
@@ -388,7 +388,7 @@
               'content-type': 'multipart/form-data'
             }
           };
-          this.$axios.post('http://localhost:8080/sell', formData, config);
+          this.$axios.post('https://b-text-api.herokuapp.com/sell', formData, config);
           console.log(formData);
           console.log(this.userDetail);
            this.$router.push({name: 'mybooks', params: {newBook: this.title}});

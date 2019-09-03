@@ -81,13 +81,13 @@
     },
     methods:{
       getMyBooks(user_id){
-        this.$axios.get('http://localhost:8080/messages/buy', {params: {from_user_id: user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/messages/buy', {params: {from_user_id: user_id}})
           .then(res=>{
             this.myBooks=res.data
           });
       },
       getMyBooksId(){
-        this.$axios.get('http://localhost:8080/mybooks', {params: {user_id: this.userDetail.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/mybooks', {params: {user_id: this.userDetail.id}})
           .then(res=>{
             var myBooksId=res.data;
             for(var i=0; i<myBooksId.length; i++){
@@ -96,7 +96,7 @@
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       toMessages(book_id, user_id){
         this.$router.push('/messages/private/'+book_id+'/'+user_id);

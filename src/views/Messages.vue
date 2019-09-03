@@ -47,7 +47,8 @@
                      <v-img 
                      v-else-if="otherUsersDetail.profile_image!='default'"
                      :src="uploadedImage"></v-img>
-                     <img v-else :src="require('../assets/images/account.svg')">
+                     <img v-else :src="require('../assets/images/account.svg')"
+                     style="opacity: 0.7;">
                   </v-avatar>
                 </div>
                 <div class="chatting">
@@ -112,7 +113,7 @@
     },
     methods:{
       getMessages(){
-        this.$axios.get('http://localhost:8080/messages', {params: {user_id: this.userDetail.id, book_id: this.$route.params.book_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/messages', {params: {user_id: this.userDetail.id, book_id: this.$route.params.book_id}})
           .then(res=>{
             this.messages=res.data;
           });
@@ -141,13 +142,13 @@
         }
       },
       getMyBooks(user_id){
-        this.$axios.get('http://localhost:8080/messages/mybooks', {params: {user_id: user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/messages/mybooks', {params: {user_id: user_id}})
           .then(res=>{
             this.myBooks=res.data
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       toMessagesUsers(book_id){
         this.$router.push('/messages/'+book_id);
@@ -187,7 +188,7 @@
               'content-type': 'multipart/form-data'
             }
           };
-          this.$axios.post('http://localhost:8080/messages/send', formData, config);
+          this.$axios.post('https://b-text-api.herokuapp.com/messages/send', formData, config);
           this.message='';
           this.$refs.target.scrollIntoView(false);
           }
@@ -203,13 +204,13 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/messages/read', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/messages/read', formData, config);
       },
       getUser(){
-        this.$axios.get('http://localhost:8080/get_user', {params: {id: this.$route.params.user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/get_user', {params: {id: this.$route.params.user_id}})
           .then(res=>{
             this.otherUsersDetail=res.data;
-            this.uploadedImage="http://localhost:8080/users/"+ this.otherUsersDetail.profile_image;
+            this.uploadedImage="https://b-text-api.herokuapp.com/users/"+ this.otherUsersDetail.profile_image;
           });
       },
       toUserDetail(){

@@ -160,8 +160,7 @@
               'content-type': 'multipart/form-data'
             }
           };
-          this.$axios.post('http://localhost:8080/signup_with_img', formData, config).then(res=>{
-            console.log("called");
+          this.$axios.post('https://b-text-api.herokuapp.com/signup_with_img', formData, config).then(res=>{
             this.setUserDetail();
           })
           
@@ -186,7 +185,7 @@
             }
           };
           this.$axios
-            .post('http://localhost:8080/signup', formData, config).then(res=>{
+            .post('https://b-text-api.herokuapp.com/signup', formData, config).then(res=>{
             this.setUserDetail();
           })
           
@@ -208,11 +207,10 @@
         this.university=university;
       },
       setUserDetail(){
-        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+        this.$axios.get('https://b-text-api.herokuapp.com/user', {params: {uid: this.uid}})
           .then(res=>{
             this.userDetail=res.data;
           
-           console.log(this.userDetail);
           this.$store.commit('setUserDetail', this.userDetail);
             if(this.userDetail.is_signup_detail){
               this.$router.push('/');
@@ -232,7 +230,7 @@
           this.isPhotoURL = true
         }
         this.uid = user.uid;
-        this.$axios.get('http://localhost:8080/user', {params: {uid: this.uid}})
+        this.$axios.get('https://b-text-api.herokuapp.com/user', {params: {uid: this.uid}})
         .then(res=>{
           this.userInfo=res.data;
           this.is_signup=res.data.is_signup;

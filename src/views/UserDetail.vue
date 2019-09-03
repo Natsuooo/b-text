@@ -23,7 +23,8 @@
                  <v-img 
                  v-else-if="uploadedImage"
                  :src="uploadedImage"></v-img>
-                 <img v-else :src="require('../assets/images/account.svg')">
+                 <img v-else :src="require('../assets/images/account.svg')"
+                 style="opacity: 0.7;">
               </v-avatar>
               <span class="text-center">     {{otherUsersDetail.username}} </span>
             </v-container>
@@ -46,7 +47,7 @@
             dark
             small
             class="caption"
-            @click="dialog=true; getRate(otherUsersDetail.id)">
+            @click="dialog=true;">
              評価する
            </v-btn>
         </div>
@@ -86,7 +87,7 @@
                 v-if="isRated"
                 color="green accent-4"
                 text
-                @click="updateRate(otherUsersDetail.id)"
+                @click="updateMyRate(otherUsersDetail.id)"
               >
                 完了
               </v-btn>
@@ -169,7 +170,7 @@
     },
     methods:{
       getBookDetail(){
-        this.$axios.get('http://localhost:8080/books/detail', {params: {id: this.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/books/detail', {params: {id: this.id}})
           .then(res=>{
             this.bookDetail=res.data;
             this.created_at=this.bookDetail.created_at.slice(0, 10);
@@ -177,13 +178,15 @@
           });
       },
       originalImagePath(original_image){
-        return "http://localhost:8080/book_images/"+original_image
+        return "https://b-text-api.herokuapp.com/book_images/"+original_image
       },
       getUser(){
-        this.$axios.get('http://localhost:8080/get_user', {params: {id: this.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/get_user', {params: {id: this.id}})
           .then(res=>{
             this.otherUsersDetail=res.data;
-            this.uploadedImage="http://localhost:8080/users/"+ this.otherUsersDetail.profile_image;
+            if(this.otherUsersDetail.profile_image!="default"){
+              this.uploadedImage="https://b-text-api.herokuapp.com/users/"+ this.otherUsersDetail.profile_image;
+            }
           });
       },
       toUserDetail(id){
@@ -193,7 +196,7 @@
         this.$router.go(-1);
       },
       getMyBooks(id){
-        this.$axios.get('http://localhost:8080/mybooks', {params: {user_id: id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/mybooks', {params: {user_id: id}})
           .then(res=>{
             this.myBooks=res.data;
             
@@ -206,7 +209,7 @@
         this.$router.push({name: 'bookdetail', params: {id: id}});
       },
       getRate(){
-        this.$axios.get('http://localhost:8080/rates/my', {params: {to_user_id: this.id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/rates/my', {params: {to_user_id: this.id}})
           .then(res=>{
             this.rates=res.data;
             this.getRating();
@@ -218,7 +221,7 @@
           sum=sum+parseInt(this.rates[i].rating);
         }
         var rating=sum/this.rates.length;
-        this.rating=rating;
+        this.rating=Math.round(rating *10)/10;
       },
       rate(to_user_id){
         this.dialog=false;
@@ -231,27 +234,27 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/rates/create', formData, config);
-        
+        this.$axios.post('https://b-text-api.herokuapp.com/rates/create', formData, config);
+        this.getRate();
       },
       updateMyRate(to_user_id){
         this.dialog=false;
         var formData=new FormData();
         formData.append("from_user_id", this.userDetail.id);
         formData.append("to_user_id", to_user_id);
-        formData.append("rating", this.rating);
+        formData.append("rating", this.myRating);
         var config={
           headers: {
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/rates/update', formData, config);
-        
+        this.$axios.post('https://b-text-api.herokuapp.com/rates/update', formData, config);
+        this.getRate();
       },
-      getMyRate(to_user_id){
-        this.$axios.get('http://localhost:8080/rates', {params: {from_user_id: this.userDetail.id, to_user_id: to_user_id}})
+      getMyRate(){
+        this.$axios.get('https://b-text-api.herokuapp.com/rates', {params: {from_user_id: this.userDetail.id, to_user_id: this.$route.params.id}})
           .then(res=>{
-            this.rating=res.data.rating;
+            this.myRating=res.data.rating;
             if(res.data.rating){
               this.isRated=true;
             }
@@ -266,6 +269,7 @@
       this.getUser();
       this.getMyBooks(this.id);
       this.getRate();
+      this.getMyRate();
     },
   };
 </script>

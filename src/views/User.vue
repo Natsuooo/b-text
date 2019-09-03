@@ -127,7 +127,7 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('http://localhost:8080/logout', formData, config);
+        this.$axios.post('https://b-text-api.herokuapp.com/logout', formData, config);
         firebase.auth().signOut();
         this.$store.commit('setUserDetail', {});
         console.log(this.userDetail);
@@ -148,7 +148,7 @@
               'content-type': 'multipart/form-data'
             }
           };
-          this.$axios.post('http://localhost:8080/users/update_with_img', formData, config).then(res=>{
+          this.$axios.post('https://b-text-api.herokuapp.com/users/update_with_img', formData, config).then(res=>{
             this.setUserDetail(this.userDetail.id);
           });
         }else{
@@ -162,7 +162,7 @@
             }
           };
           this.$axios
-            .post('http://localhost:8080/users/update', formData, config).then(res=>{
+            .post('https://b-text-api.herokuapp.com/users/update', formData, config).then(res=>{
               this.setUserDetail(this.userDetail.id);
             });
         }
@@ -184,7 +184,7 @@
         reader.readAsDataURL(file);
       },
       setUserDetail(user_id){
-        this.$axios.get('http://localhost:8080/get_user', {params: {id: user_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/get_user', {params: {id: user_id}})
           .then(res=>{
             this.userDetail=res.data;
            this.$store.commit('setUserDetail', this.userDetail);
@@ -200,7 +200,7 @@
       this.photoURL=this.userDetail.sns_image;
       this.profile_image=this.userDetail.profile_image;
       
-      this.uploadedImage="http://localhost:8080/users/"+this.userDetail.profile_image;
+      this.uploadedImage="https://b-text-api.herokuapp.com/users/"+this.userDetail.profile_image;
     },
   };
 </script>

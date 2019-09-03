@@ -48,7 +48,7 @@ export default {
   props: ['tab', 'tabMessages'],
   methods: {
     unreadMessages(){
-      this.$axios.get('http://localhost:8080/messages/unread', {params: {to_user_id: this.userDetail.id}})
+      this.$axios.get('https://b-text-api.herokuapp.com/messages/unread', {params: {to_user_id: this.userDetail.id}})
           .then(res=>{
             this.count=res.data.count;
           });
