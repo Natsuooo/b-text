@@ -84,6 +84,7 @@
                   >
                     完了
                   </v-btn>
+                  
                 </v-flex>
               </v-layout>
             </v-container>
@@ -128,6 +129,7 @@
         is_signup: true,
         userDetail: {},
         sns_image: '',
+        
       }
     },
     components: {
@@ -141,55 +143,65 @@
       select: function(selectedUniversity){
         this.university=selectedUniversity
       },
-      submit(){
-        var username=this.name;
-        var university=this.university;
-        var user = firebase.auth().currentUser;
-        var uid=user.uid;
-        this.uid=uid;
-        
+      async submit(){
+        var url="";
         if(!this.isProfileImageUploaded){
-          var formData=new FormData();
-          this.file = this.$refs.file.files[0];
-          formData.append("profile_image", this.file)
-          formData.append("uid", uid)
-          formData.append("username", username)
-          formData.append("university", university)
-          var config={
-            headers:{
-              'content-type': 'multipart/form-data'
-            }
-          };
-          this.$axios.post('https://b-text-api.herokuapp.com/signup_with_img', formData, config).then(res=>{
-            this.setUserDetail();
-          })
-          
-          
+          var formData=new FormData()
+          formData.append('file', this.$refs.file.files[0]);
+          formData.append('upload_preset', "cq9pfuae");
+          formData.append('tags', 'gs-vue, gs-vue-uploaded');
+         await this.$axios.post("https://api.cloudinary.com/v1_1/dq8sijlfb/upload", formData).then(res=>{
+            url=res.data.secure_url
+          });
+          await this.signup(url);
         }else{
-          var formData=new FormData();
-          formData.append("uid", uid);
-          formData.append("username", username);
-          formData.append("university", university);
-          var profile_image='';
-          if(this.isPhotoURL){
-            profile_image='sns';
-            this.sns_image=this.photoURL;
-          }else{
-            profile_image='default';
-          }
-          formData.append("profile_image", profile_image)
-          formData.append("sns_image", this.sns_image)
-          var config={
-            headers:{
-              'content-type': 'multipart/form-data'
-            }
-          };
-          this.$axios
-            .post('https://b-text-api.herokuapp.com/signup', formData, config).then(res=>{
-            this.setUserDetail();
-          })
-          
+          this.signup(url);
         }
+        
+      
+        
+//        if(!this.isProfileImageUploaded){
+//          var formData=new FormData();
+//          this.file = this.$refs.file.files[0];
+//          formData.append("profile_image", this.file)
+//          formData.append("uid", uid)
+//          formData.append("username", username)
+//          formData.append("university", university)
+//          var config={
+//            headers:{
+//              'content-type': 'multipart/form-data'
+//            }
+//          };
+//          this.$axios.post('https://b-text-api.herokuapp.com/signup_with_img', formData, config).then(res=>{
+//            this.setUserDetail();
+//          })
+//          
+//          
+//        }else{
+//          var formData=new FormData();
+//          formData.append("uid", uid);
+//          formData.append("username", username);
+//          formData.append("university", university);
+//          var profile_image='';
+//          if(this.isPhotoURL){
+//            profile_image='sns';
+//            this.sns_image=this.photoURL;
+//          }else{
+//            profile_image='default';
+//          }
+//          formData.append("profile_image", profile_image)
+//          formData.append("sns_image", this.sns_image)
+//          var config={
+//            headers:{
+//              'content-type': 'multipart/form-data'
+//            }
+//          };
+//          this.$axios
+//            .post('https://b-text-api.herokuapp.com/signup', formData, config).then(res=>{
+//            this.setUserDetail();
+//          })
+          
+//        }
       },
       onFileChange(e){
         var files=e.target.files || e.dataTransfer.files;
@@ -220,7 +232,39 @@
 
           });
       },
+      signup(url){
+        var username=this.name;
+        var university=this.university;
+        var user = firebase.auth().currentUser;
+        var uid=user.uid;
+        this.uid=uid;
+        var formData=new FormData();
+        formData.append("uid", uid);
+        formData.append("username", username);
+        formData.append("university", university);
+        var profile_image='';
+        if(!this.isProfileImageUploaded){
+          profile_image=url;
+        }else{
+          if(this.isPhotoURL){
+            profile_image=this.photoURL;
+          }else{
+            profile_image='default';
+          }
+        }
+        formData.append("profile_image", profile_image)
+        var config={
+          headers:{
+            'content-type': 'multipart/form-data'
+          }
+        };
+        this.$axios
+          .post('https://b-text-api.herokuapp.com/signup', formData, config).then(res=>{
+          this.setUserDetail();
+        })
+      }
     },
+    
     created() {
       var user=firebase.auth().currentUser;
       if (user) {

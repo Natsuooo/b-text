@@ -18,18 +18,15 @@
       
       <p class="subtitle-2 mb-2">プロフィール画像</p>
       
-
       <span
-        v-if="profile_image!='sns'&&profile_image!='default'"
+        v-if="profile_image!='default'"
         @click="$refs.file.click();" style="cursor: pointer; position: relative;">
         <v-icon style="position: absolute; z-index: 5; margin-left: 11px; margin-top: 11px; opacity: 0.8">mdi-camera</v-icon>
         <v-avatar 
          style="opacity: 0.7;" >
-          <img :src="uploadedImage"/>
+          <img :src="profile_image"/>
         </v-avatar>
       </span>
-      
-      
       
       <span
         v-else
@@ -37,8 +34,7 @@
         <v-icon style="position: absolute; z-index: 5; margin-left: 11px; margin-top: 11px; opacity: 0.8">mdi-camera</v-icon>
         <v-avatar 
          style="opacity: 0.7;">
-          <img v-if="profile_image=='sns'" :src="photoURL">
-          <img v-else :src="require('../assets/images/account.svg')">
+          <img :src="require('../assets/images/account.svg')">
 <!--          <img v-else :src="require('../assets/images/account.svg')">-->
         </v-avatar>
       </span>
@@ -102,13 +98,13 @@
       userDetail: {},
       username: '',
       university: '',
-      photoURL: '',
+//      photoURL: '',
       profile_image: '',
       university: '',
       imageRules: [
         value => !value || value.size < 2000000 || '2MB以下の画像を使用して下さい。',
       ],
-      uploadedImage: '',
+//      uploadedImage: '',
       isProfileImageUploaded: false,
       isUpdated: false,
     }),
@@ -127,45 +123,80 @@
             'content-type': 'multipart/form-data'
           }
         };
-        this.$axios.post('https://b-text-api.herokuapp.com/logout', formData, config);
+//        this.$axios.post('https://b-text-api.herokuapp.com/logout', formData, config);
         firebase.auth().signOut();
         this.$store.commit('setUserDetail', {});
-        console.log(this.userDetail);
         this.$router.push('/login');
       },
-      updateProfile(){
+      async updateProfile(){
         
+        var url="";
         if(this.isProfileImageUploaded){
-          var formData=new FormData();
-          this.file = this.$refs.file.files[0];
-          formData.append("profile_image", this.file);
-          formData.append("username", this.username);
-          formData.append("university", this.university);
-          formData.append("user_id", this.userDetail.id);
-          formData.append("uid", this.userDetail.uid);
-          var config={
-            headers:{
-              'content-type': 'multipart/form-data'
-            }
-          };
-          this.$axios.post('https://b-text-api.herokuapp.com/users/update_with_img', formData, config).then(res=>{
+          var formData=new FormData()
+          formData.append('file', this.$refs.file.files[0]);
+          formData.append('upload_preset', "cq9pfuae");
+          formData.append('tags', 'gs-vue, gs-vue-uploaded');
+         await this.$axios.post("https://api.cloudinary.com/v1_1/dq8sijlfb/upload", formData).then(res=>{
+            url=res.data.secure_url
+          });
+          await this.update(url);
+        }else{
+          this.update(url);
+        }
+        
+//        if(this.isProfileImageUploaded){
+//          var formData=new FormData();
+//          this.file = this.$refs.file.files[0];
+//          formData.append("profile_image", this.file);
+//          formData.append("username", this.username);
+//          formData.append("university", this.university);
+//          formData.append("user_id", this.userDetail.id);
+//          formData.append("uid", this.userDetail.uid);
+//          var config={
+//            headers:{
+//              'content-type': 'multipart/form-data'
+//            }
+//          };
+//          this.$axios.post('https://b-text-api.herokuapp.com/users/update_with_img', formData, config).then(res=>{
+//            this.setUserDetail(this.userDetail.id);
+//          });
+//        }else{
+//          var formData=new FormData();
+//          formData.append("username", this.username);
+//          formData.append("university", this.university);
+//          formData.append("user_id", this.userDetail.id);
+//          var config={
+//            headers:{
+//              'content-type': 'multipart/form-data'
+//            }
+//          };
+//          this.$axios
+//            .post('https://b-text-api.herokuapp.com/users/update', formData, config).then(res=>{
+//              this.setUserDetail(this.userDetail.id);
+//            });
+//        }
+//        this.isUpdated=true;
+      },
+      update(url){
+        var formData=new FormData();
+        formData.append("username", this.username);
+        formData.append("university", this.university);
+        formData.append("user_id", this.userDetail.id);
+        var config={
+          headers:{
+            'content-type': 'multipart/form-data'
+          }
+        };
+        var profile_image='';
+        if(this.isProfileImageUploaded){
+          profile_image=url;
+        }else{
+          profile_image='default';
+        }
+        formData.append("profile_image", profile_image);
+        this.$axios.post('https://b-text-api.herokuapp.com/users/update', formData, config).then(res=>{
             this.setUserDetail(this.userDetail.id);
           });
-        }else{
-          var formData=new FormData();
-          formData.append("username", this.username);
-          formData.append("university", this.university);
-          formData.append("user_id", this.userDetail.id);
-          var config={
-            headers:{
-              'content-type': 'multipart/form-data'
-            }
-          };
-          this.$axios
-            .post('https://b-text-api.herokuapp.com/users/update', formData, config).then(res=>{
-              this.setUserDetail(this.userDetail.id);
-            });
-        }
         this.isUpdated=true;
       },
       selectUniversity(university){
@@ -179,7 +210,7 @@
       createImage(file){
         let reader=new FileReader();
         reader.onload=(e)=>{
-          this.uploadedImage=e.target.result;
+          this.profile_image=e.target.result;
         };
         reader.readAsDataURL(file);
       },
@@ -197,10 +228,9 @@
       this.userDetail=this.$store.getters.userDetail;
       this.username=this.userDetail.username;
       this.university=this.userDetail.university;
-      this.photoURL=this.userDetail.sns_image;
       this.profile_image=this.userDetail.profile_image;
       
-      this.uploadedImage="https://b-text-api.herokuapp.com/users/"+this.userDetail.profile_image;
+//      this.uploadedImage="https://b-text-api.herokuapp.com/users/"+this.userDetail.profile_image;
     },
   };
 </script>

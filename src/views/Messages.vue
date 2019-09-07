@@ -7,7 +7,7 @@
         </v-btn>
         <v-toolbar-title @click="toUserDetail">{{otherUsersDetail.username}}</v-toolbar-title>
       </v-toolbar>
-      <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;">
+      <v-flex xs12 sm6 style="margin-bottom: 60px; margin-top: 40px;">
       
         <div class="line-bc">
           <div v-for="message in messages">
@@ -42,11 +42,8 @@
                     @click="toUserDetail"
                     >
                     <v-img 
-                     v-if="otherUsersDetail.sns_image"
-                     :src="otherUsersDetail.sns_image"></v-img>
-                     <v-img 
-                     v-else-if="otherUsersDetail.profile_image!='default'"
-                     :src="uploadedImage"></v-img>
+                     v-if="otherUsersDetail.profile_image!='default'"
+                     :src="otherUsersDetail.profile_image"></v-img>
                      <img v-else :src="require('../assets/images/account.svg')"
                      style="opacity: 0.7;">
                   </v-avatar>
@@ -160,20 +157,44 @@
         if(this.message!=""){
           
           var dt=new Date();
+          console.log(dt)
+          console.log(dt.getMonth())
+          console.log(dt.getDate())
+          console.log(dt.getHours())
           var created_at=dt.toLocaleString();
+          console.log(created_at)
           var month=created_at.slice(0,1);
-          if(date!="1"){
+//          if(date!="1"){
+//            month="0"+month;
+//            created_at="0"+created_at;
+//          }
+          var year=dt.getFullYear().toString();
+          var month=dt.getMonth();
+          var month=String(month+1);
+          var date=dt.getDate().toString();
+          var hours=dt.getHours().toString();
+          var minutes=dt.getMinutes().toString();
+//          var date=created_at.slice(3,5);
+//          var year=created_at.slice(6,10);
+//          var hour=dt.getHours();
+//          var minute=created_at.slice(14,16);
+//          if(created_at.slice(20, 22)=="PM"){
+//            hour=parseInt(hour)+12;
+//          }
+          if(month.length==1){
             month="0"+month;
-            created_at="0"+created_at;
           }
-          var date=created_at.slice(3,5);
-          var year=created_at.slice(6,10);
-          var hour=created_at.slice(12,14);
-          var minute=created_at.slice(14,16);
-          if(created_at.slice(20, 22)=="PM"){
-            hour=parseInt(hour)+12;
+          if(date.length==1){
+            date="0"+date;
           }
-          var created_at_js=year+"-"+month+"-"+date+" "+hour+":"+minute;
+          if(hours.length==1){
+            hours="0"+hours;
+          }
+          if(minutes.length==1){
+            minutes="0"+minutes;
+          }
+          console.log(month)
+          var created_at_js=year+"-"+month+"-"+date+" "+hours+":"+minutes;
           
           this.messages.push({book_id: this.$route.params.book_id, from_user_id: this.userDetail.id, to_user_id: this.$route.params.user_id, content: this.message, created_at: created_at_js});
           
@@ -297,9 +318,10 @@
   /*以下、③右側の緑コメント*/
   .mycomment {
     margin: 10px 0;
+    align-content: right;
   }
   .mycomment p {
-    display: inline-block;
+    display: inline-flex;
     position: relative; 
     margin: 0 10px 0 0;
     padding: 10px;

@@ -1,6 +1,7 @@
 <template>
   <v-content>
     <v-layout justify-center>
+     
       <LoginBar v-if="!isLogin"/>
       <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;">
         <img src="../assets/images/favicon_520_transparent.png" alt="B-text" width="30" class="mr-2">
@@ -13,13 +14,30 @@
           v-model="keyword"
         ></v-text-field>
       </v-toolbar>
-      <v-flex xs12 sm6 class="mt-12 mb-12">
+      <v-flex xs12 sm10 class="mt-12 mb-12">
+       
         <v-container fluid>
+          <v-carousel
+           v-if="!isLogin"
+           class="mt-2"
+           cycle
+           height="auto"
+           hide-delimiter-background
+           :show-arrows="false">
+            <v-carousel-item>
+              <img src="../assets/images/top1.png" width="100%"
+              height="auto">
+            </v-carousel-item>
+            <v-carousel-item>
+              <img src="../assets/images/top2.png" width="100%"
+              height="auto">
+            </v-carousel-item>
+          </v-carousel>
           <v-row>
             <v-col 
-             v-for="book in search" :key='book.id' 
+             v-for="book in search"  
              cols="4" 
-             class="pa-0" 
+             class="pa-0 d-flex d-sm-none" 
              style="position: relative;">
               <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
@@ -35,12 +53,53 @@
                   </div>
                   
                 </div>
-              <v-img v-if="book.google_image" :src="book.google_image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
-              <v-img v-if="book.original_image" :src="originalImagePath(book.original_image)" @click="bookDetail(book.id)"></v-img>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
+            </v-col>
+            <v-col 
+             v-for="book in search" 
+             cols="3" 
+             class="pa-1 d-none d-sm-flex d-md-none" 
+             style="position: relative;">
+              <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
+                  <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
+                </div>
+                <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
+                 <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                    <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                    <span class="body-2">{{book.liked}}</span>
+                  </div>
+                  <div v-else @click="deleteLike(book.id, book.liked--);">
+                    <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                    <span class="body-2">{{book.liked}}</span>
+                  </div>
+                  
+                </div>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
+            </v-col>
+            <v-col 
+             v-for="book in search" 
+             cols="2" 
+             class="pa-1 d-none d-md-flex" 
+             style="position: relative;">
+              <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
+                  <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
+                </div>
+                <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
+                 <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                    <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                    <span class="body-2">{{book.liked}}</span>
+                  </div>
+                  <div v-else @click="deleteLike(book.id, book.liked--);">
+                    <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                    <span class="body-2">{{book.liked}}</span>
+                  </div>
+                  
+                </div>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
             </v-col>
           </v-row>
         </v-container>
-        <v-layout v-if="!search" justify-center style="margin-top: 50px; margin-bottom: 20px;">
+        <v-layout v-show="!search" justify-center style="margin-top: 50px; margin-bottom: 20px;">
           <v-subheader>お探しの本は見つかりませんでした。</v-subheader>
         </v-layout>
       </v-flex>
@@ -93,9 +152,9 @@
             this.books=res.data
           });
       },
-      originalImagePath(original_image){
-        return "https://b-text-api.herokuapp.com/book_images/"+original_image
-      },
+//      originalImagePath(original_image){
+//        return "https://b-text-api.herokuapp.com/book_images/"+original_image
+//      },
       bookDetail(id){
         this.$router.push({name: 'bookdetail', params: {id: id}});
       },

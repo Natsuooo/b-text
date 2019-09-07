@@ -18,11 +18,8 @@
                 class="mr-3"
                 style="margin-left: -10px;">
                 <v-img 
-                 v-if="otherUsersDetail.sns_image"
-                 :src="otherUsersDetail.sns_image"></v-img>
-                 <v-img 
-                 v-else-if="uploadedImage"
-                 :src="uploadedImage"></v-img>
+                 v-if="otherUsersDetail.profile_image!='default'"
+                 :src="otherUsersDetail.profile_image"></v-img>
                  <img v-else :src="require('../assets/images/account.svg')"
                  style="opacity: 0.7;">
               </v-avatar>
@@ -37,6 +34,7 @@
             color="green accent-4"
             background-color="grey lighten-1"
             small 
+            readonly            
             half-increments
             hover
           ></v-rating>
@@ -158,7 +156,7 @@
       myBooks: {},
       is_public: false,
       rates: {},
-      uploadedImage: '',
+//      uploadedImage: '',
       rating: 0,
       dialog: false,
       isRated: false,
@@ -184,9 +182,9 @@
         this.$axios.get('https://b-text-api.herokuapp.com/get_user', {params: {id: this.id}})
           .then(res=>{
             this.otherUsersDetail=res.data;
-            if(this.otherUsersDetail.profile_image!="default"){
-              this.uploadedImage="https://b-text-api.herokuapp.com/users/"+ this.otherUsersDetail.profile_image;
-            }
+//            if(this.otherUsersDetail.profile_image!="default"){
+//              this.uploadedImage="https://b-text-api.herokuapp.com/users/"+ this.otherUsersDetail.profile_image;
+//            }
           });
       },
       toUserDetail(id){
@@ -212,7 +210,9 @@
         this.$axios.get('https://b-text-api.herokuapp.com/rates/my', {params: {to_user_id: this.id}})
           .then(res=>{
             this.rates=res.data;
-            this.getRating();
+            if(this.rates){
+              this.getRating();
+            }
           });
       },
       getRating(){

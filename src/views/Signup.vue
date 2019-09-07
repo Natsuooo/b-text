@@ -97,6 +97,7 @@
                   </v-btn>
                   <p class="text-center pt-5 mt-5 grey--text text--darken-1">既にアカウントをお持ちですか？</p>
                   <p class="text-center"><router-link to="/login" class="green--text text--accent-4" style="text-decoration:none;">ログイン</router-link></p>
+                  
                 </v-flex>
               </v-layout>
             </v-container>
@@ -187,8 +188,8 @@
             this.setUserDetail();
           })
           .catch(error=>alert(error.message))
-      }
-    }
+      },
+    },
   };
 </script>
 

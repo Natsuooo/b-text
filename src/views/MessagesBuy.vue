@@ -31,8 +31,7 @@
             </v-btn>
             <v-layout>
               <v-flex xs4 class="pa-2">
-                <v-img v-if="myBook.google_image" :src="myBook.google_image"></v-img>
-                <v-img v-if="myBook.original_image" :src="originalImagePath(myBook.original_image)"></v-img>
+                <v-img v-if="myBook.image" :src="myBook.image"></v-img>
               </v-flex>
               <v-flex xs8>
                 <v-card-title class="subtitle-1 pt-2">{{myBook.title}}</v-card-title>
@@ -90,9 +89,12 @@
         this.$axios.get('https://b-text-api.herokuapp.com/mybooks', {params: {user_id: this.userDetail.id}})
           .then(res=>{
             var myBooksId=res.data;
-            for(var i=0; i<myBooksId.length; i++){
-              this.myBooksId.push(myBooksId[i].id);
+            if(myBooksId){
+              for(var i=0; i<myBooksId.length; i++){
+                this.myBooksId.push(myBooksId[i].id);
+              }
             }
+            
           });
       },
       originalImagePath(original_image){

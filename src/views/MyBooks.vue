@@ -18,8 +18,8 @@
          {{isPublic()}}
           <v-layout>
             <v-flex xs4 class="pa-2">
-              <v-img v-if="myBook.google_image" :src="myBook.google_image"></v-img>
-              <v-img v-if="myBook.original_image" :src="originalImagePath(myBook.original_image)"></v-img>
+              <v-img :src="myBook.image"></v-img>
+<!--              <v-img v-if="myBook.original_image" :src="originalImagePath(myBook.original_image)"></v-img>-->
             </v-flex>
             <v-flex xs8>
               <v-card-title class="subtitle-1 pt-2">{{myBook.title}}</v-card-title>
@@ -47,12 +47,7 @@
          {{isFinished()}}
           <v-layout>
             <v-flex xs5 class="pa-2">
-              <v-img v-if="myBook.google_image" :src="myBook.google_image">
-                <v-container fill-height class="pa-0">
-                  <v-img :src="require('../assets/images/sold_out.png')"></v-img>
-                </v-container>
-              </v-img>
-              <v-img v-if="myBook.original_image" :src="originalImagePath(myBook.original_image)">
+              <v-img :src="myBook.image">
                 <v-container fill-height class="pa-0">
                   <v-img :src="require('../assets/images/sold_out.png')"></v-img>
                 </v-container>

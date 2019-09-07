@@ -366,37 +366,66 @@
         this.uploadedImage="";
         this.file="";
       },
-      sell(){
-        this.file=this.$refs.file.files[0];
-        if(this.googleImage||this.file){
-          var formData=new FormData();
-          formData.append("user_id", this.userDetail.id);
-          formData.append("university", this.userDetail.university);
-          if(this.googleImage){
-            this.file=""
-          }else if(this.file){
-            this.googleImage=""
-          }
-          formData.append("google_image", this.googleImage);
-          formData.append("original_image", this.file);
-          formData.append("title", this.title);
-          formData.append("state", this.state);
-          formData.append("price", this.price);
-          formData.append("note", this.note);
-          var config={
-            headers: {
-              'content-type': 'multipart/form-data'
-            }
-          };
-          this.$axios.post('https://b-text-api.herokuapp.com/sell', formData, config);
-          console.log(formData);
-          console.log(this.userDetail);
-           this.$router.push({name: 'mybooks', params: {newBook: this.title}});
+      async sell(){
+        var image="";
+        if(this.googleImage){
+          image=this.googleImage;
+          this.upload(image);
         }else{
-          this.imageValidation=true;
-          scrollTo(0, 200);
+          var formData=new FormData()
+          formData.append('file', this.$refs.file.files[0]);
+          formData.append('upload_preset', "cq9pfuae");
+          formData.append('tags', 'gs-vue, gs-vue-uploaded');
+          await this.$axios.post("https://api.cloudinary.com/v1_1/dq8sijlfb/upload", formData).then(res=>{
+            image=res.data.secure_url
+          });
+          await this.upload(image);
         }
         
+//        if(this.googleImage||this.file){
+//          var formData=new FormData();
+//          formData.append("user_id", this.userDetail.id);
+//          formData.append("university", this.userDetail.university);
+//          if(this.googleImage){
+//            this.file=""
+//          }else if(this.file){
+//            this.googleImage=""
+//          }
+//          formData.append("image", this.googleImage);
+//          formData.append("original_image", this.file);
+//          formData.append("title", this.title);
+//          formData.append("state", this.state);
+//          formData.append("price", this.price);
+//          formData.append("note", this.note);
+//          var config={
+//            headers: {
+//              'content-type': 'multipart/form-data'
+//            }
+//          };
+//          this.$axios.post('https://b-text-api.herokuapp.com/sell', formData, config);
+//           this.$router.push({name: 'mybooks', params: {newBook: this.title}});
+//        }else{
+//          this.imageValidation=true;
+//          scrollTo(0, 200);
+//        }
+        
+      },
+      upload(image){
+        var formData=new FormData();
+        formData.append("user_id", this.userDetail.id);
+        formData.append("university", this.userDetail.university);
+        formData.append("image", image);
+        formData.append("title", this.title);
+        formData.append("state", this.state);
+        formData.append("price", this.price);
+        formData.append("note", this.note);
+        var config={
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        };
+        this.$axios.post('https://b-text-api.herokuapp.com/sell', formData, config);
+         this.$router.push({name: 'mybooks', params: {newBook: this.title}});
       },
       onFileChange(e){
         var files=e.target.files || e.dataTransfer.files;
