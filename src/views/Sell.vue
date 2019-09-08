@@ -1,7 +1,7 @@
 <template>
   <v-content style="margin-top: -15px;">
     <v-layout justify-center>
-      <v-flex xs12 sm6 style="margin-bottom: 100px;" class="ma-3">
+      <v-flex xs12 sm8 style="margin-bottom: 100px;" class="ma-3">
         
         <v-alert
           outlined

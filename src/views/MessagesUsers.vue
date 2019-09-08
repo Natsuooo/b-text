@@ -7,13 +7,13 @@
         </v-btn>
         <v-toolbar-title>メッセージ</v-toolbar-title>
       </v-toolbar>
-      <v-flex xs12 sm6 style="margin-bottom: 100px;  margin-top: 60px;">
+      <v-flex xs12 sm8 style="margin-bottom: 100px;  margin-top: 60px;">
         
       <v-container v-if="users">
         <v-card 
          v-for="user in users"
          class="mb-3"
-         style="position: relative;">
+         style="position: relative; cursor:pointer;">
          <v-btn class="mx-2"
            v-if="user.unread_messages.length" 
            fab
@@ -29,13 +29,11 @@
                <v-layout justify-center>
                  <v-avatar
                   class="mr-2">
-                  <v-img 
-                   v-if="user.sns_image"
-                   :src="user.sns_image"></v-img>
                    <v-img 
-                   v-else-if="user.profile_image!='default'"
-                   :src="uploadedImage(user.profile_image)"></v-img>
-                   <img v-else :src="require('../assets/images/account.svg')">
+                   v-if="user.profile_image!='default'"
+                   :src="user.profile_image"></v-img>
+                   <img v-else :src="require('../assets/images/account.svg')"
+                   style="opacity: 0.7;">
                 </v-avatar>
                </v-layout>
              </v-container>

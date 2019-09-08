@@ -7,7 +7,7 @@
         </v-btn>
         <v-toolbar-title @click="toUserDetail">{{otherUsersDetail.username}}</v-toolbar-title>
       </v-toolbar>
-      <v-flex xs12 sm6 style="margin-bottom: 60px; margin-top: 40px;">
+      <v-flex xs12 sm8 style="margin-bottom: 60px; margin-top: 40px;">
       
         <div class="line-bc">
           <div v-for="message in messages">
@@ -110,7 +110,7 @@
     },
     methods:{
       getMessages(){
-        this.$axios.get('https://b-text-api.herokuapp.com/messages', {params: {user_id: this.userDetail.id, book_id: this.$route.params.book_id}})
+        this.$axios.get('https://b-text-api.herokuapp.com/messages', {params: {from_user_id: this.$route.params.user_id, to_user_id: this.userDetail.id, book_id: this.$route.params.book_id}})
           .then(res=>{
             this.messages=res.data;
           });
@@ -261,7 +261,6 @@
   /*以下、①背景色など*/
   .line-bc {
     padding: 20px 10px;
-    max-width: 450px;
     margin: 15px auto;
     text-align: right;
     font-size: 14px;
@@ -317,8 +316,8 @@
 
   /*以下、③右側の緑コメント*/
   .mycomment {
-    margin: 10px 0;
     align-content: right;
+    margin-bottom: 25px;
   }
   .mycomment p {
     display: inline-flex;

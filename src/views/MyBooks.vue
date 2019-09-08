@@ -2,7 +2,7 @@
 <v-content>
   <v-layout justify-center>
     <MyPageTabs/>
-    <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;">
+    <v-flex xs12 sm8 style="margin-bottom: 100px; margin-top: 70px;">
       <v-alert type="success" v-if="this.$route.params.newBook">
         「{{this.$route.params.newBook}}」を出品しました。
       </v-alert>
@@ -48,9 +48,7 @@
           <v-layout>
             <v-flex xs5 class="pa-2">
               <v-img :src="myBook.image">
-                <v-container fill-height class="pa-0">
-                  <v-img :src="require('../assets/images/sold_out.png')"></v-img>
-                </v-container>
+                <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;"></v-img>
               </v-img>
             </v-flex>
             <v-flex xs7>

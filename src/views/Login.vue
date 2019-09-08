@@ -3,13 +3,15 @@
     <v-layout justify-center>
       <v-flex xs12 sm6>
         <v-card class="pa-5">
+         
           <v-img
             :src="require('../assets/images/favicon_520_transparent.png')"
             class="my-3"
             contain
             height="70"
+            @click="toHome()"            
           ></v-img>
-          <p class="display-1 text-center" style="font-family: 'Comfortaa', cursive!important;">B-text</p>
+          <p class="display-1 text-center" style="font-family: 'Comfortaa', cursive!important;" @click="toHome()">B-text</p>
           <p class="text-center ml-3 mb-5">大学のテキストをシェアしよう。</p>
           <p class="text-center pt-5 mb-2 display-1">ログイン</p>
           <v-divider></v-divider>
@@ -172,6 +174,9 @@
             this.setUserDetail();
             })
           .catch(error=>alert(error.message))
+      },
+      toHome(){
+        this.$router.push('/');
       }
     },
     created() {

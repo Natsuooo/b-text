@@ -2,7 +2,7 @@
 <v-content>
   <v-layout justify-center>
     <MyPageTabs/>
-    <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;" class="pa-5">
+    <v-flex xs12 sm8 style="margin-bottom: 100px; margin-top: 70px;" class="pa-5">
      
       <v-alert type="success" v-if="isUpdated" class="mt-0 mb-8">
         ユーザー情報を変更しました。

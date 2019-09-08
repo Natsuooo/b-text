@@ -2,8 +2,10 @@
   <v-content>
     <v-layout justify-center>
      
-      <LoginBar v-if="!isLogin"/>
-      <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;">
+<!--      <LoginBar v-if="!isLogin" style="z-index: 20;"/>-->
+      
+      
+      <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;" v-if="isLogin">
         <img src="../assets/images/favicon_520_transparent.png" alt="B-text" width="30" class="mr-2">
         <v-text-field
           hide-details
@@ -14,9 +16,39 @@
           v-model="keyword"
         ></v-text-field>
       </v-toolbar>
+      
+      <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;" v-else>
+        <img src="../assets/images/favicon_520_transparent.png" alt="B-text" width="30" class="mr-2" style="margin-left: -5px;">
+        <v-toolbar-title class="title">
+          <span style="font-family: 'Comfortaa', cursive!important;">B-text</span>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn
+          depressed 
+          small
+          color="green accent-4" 
+          class="mr-2 white--text px-2 py-4 caption"
+          to="/signup"
+        >
+          新規登録
+        </v-btn>
+        <v-btn
+          depressed 
+          outlined 
+          small
+          color="green accent-4" 
+          class="px-2 py-4 caption"
+          to="/login"
+        >
+          ログイン
+        </v-btn>
+      </v-toolbar>
+      
       <v-flex xs12 sm10 class="mt-12 mb-12">
-       
         <v-container fluid>
+          <v-alert type="success" v-if="!isLogin" icon="mdi-information" class="mt-3">
+            今すぐログインして、テキストフリマに参加してみましょう。
+          </v-alert>
           <v-carousel
            v-if="!isLogin"
            class="mt-2"
@@ -32,28 +64,45 @@
               <img src="../assets/images/top2.png" width="100%"
               height="auto">
             </v-carousel-item>
+            <v-carousel-item>
+              <img src="../assets/images/top3.png" width="100%"
+              height="auto">
+            </v-carousel-item>
+            <v-carousel-item>
+              <img src="../assets/images/top4.png" width="100%"
+              height="auto">
+            </v-carousel-item>
           </v-carousel>
           <v-row>
             <v-col 
              v-for="book in search"  
              cols="4" 
-             class="pa-0 d-flex d-sm-none" 
+             class="pa-1 d-flex d-sm-none" 
              style="position: relative;">
               <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
                 </div>
                 <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
-                 <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
-                    <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
-                    <span class="body-2">{{book.liked}}</span>
-                  </div>
-                  <div v-else @click="deleteLike(book.id, book.liked--);">
-                    <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
-                    <span class="body-2">{{book.liked}}</span>
-                  </div>
-                  
+                <span v-if="isLogin">
+                   <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                    <div v-else @click="deleteLike(book.id, book.liked--);">
+                      <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                  <span v-else>
+                    <div>
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
                 </div>
-              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)">
+                <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!book.is_public"></v-img>
+              </v-img>
             </v-col>
             <v-col 
              v-for="book in search" 
@@ -98,6 +147,7 @@
               <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
             </v-col>
           </v-row>
+          
         </v-container>
         <v-layout v-show="!search" justify-center style="margin-top: 50px; margin-bottom: 20px;">
           <v-subheader>お探しの本は見つかりませんでした。</v-subheader>
@@ -221,6 +271,12 @@
         this.array=array;
         }
       },
+      getAllBooks(){
+        this.$axios.get('https://b-text-api.herokuapp.com/books/all')
+          .then(res=>{
+            this.books=res.data
+          });
+      }
     },
     computed: {
       search(){
@@ -243,8 +299,13 @@
       this.user=this.$store.getters.user;
       this.userDetail=this.$store.getters.userDetail;
       this.university=this.userDetail.university
-      this.getBooks();
-      this.getLikes();
+      
+      if(this.isLogin){
+        this.getBooks();
+        this.getLikes();
+      }else{
+        this.getAllBooks();
+      }
     },
   };
 </script>

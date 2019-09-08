@@ -1,9 +1,9 @@
 <template>
   <v-content>
     <v-layout justify-center>
-      <LoginBar v-if="!isLogin"/>
+<!--      <LoginBar v-if="!isLogin"/>-->
       
-      <v-flex xs12 sm6>
+      <v-flex xs12 sm8>
         <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;">
           <v-btn icon @click="backHome">
             <v-icon>mdi-arrow-left</v-icon>
@@ -18,16 +18,9 @@
             購入リクエストを送信しました。メッセージ画面から確認することができます。
           </v-alert>
           <v-card-title class="justify-center mb-2">{{bookDetail.title}}</v-card-title>
-          <v-img v-if="bookDetail.google_image" :src="bookDetail.google_image" width="150" class="ml-auto mr-auto">
-            <v-container fill-height class="pa-0" v-if="!bookDetail.is_public">
-              <v-img :src="require('../assets/images/sold_out.png')"></v-img>
-            </v-container>
+          <v-img :src="bookDetail.image" style="width: 50%;" class="ml-auto mr-auto">
+            <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!bookDetail.is_public"></v-img>
           </v-img>
-          <v-img v-if="bookDetail.original_image" :src="originalImagePath(bookDetail.original_image)" width="150" class="ml-auto mr-auto">
-            <v-container fill-height class="pa-0" v-if="!bookDetail.is_public">
-              <v-img :src="require('../assets/images/sold_out.png')"></v-img>
-            </v-container>
-          </v-img> 
 
           <v-card-title class="justify-center mb-2 title">{{bookDetail.price}}円</v-card-title>
           
@@ -103,6 +96,8 @@
               large
               @click="request"
               class="mt-8"
+              v-show="bookDetail.is_public"
+              v-if="isLogin"
             >
                 購入リクエストを送る
               </v-btn>
@@ -348,7 +343,12 @@
       this.userDetail=this.$store.getters.userDetail;
       this.id=this.$route.params.id;
       this.getBookDetail();
-      this.getLikes();
+      
+      if(this.isLogin){
+        this.getLikes();
+      }else{
+        
+      }
     },
   };
 </script>

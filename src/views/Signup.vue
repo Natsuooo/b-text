@@ -8,8 +8,9 @@
             class="my-3"
             contain
             height="70"
+            @click="toHome()"
           ></v-img>
-          <p class="display-1 text-center" style="font-family: 'Comfortaa', cursive!important;">B-text</p>
+          <p class="display-1 text-center" style="font-family: 'Comfortaa', cursive!important;" @click="toHome()">B-text</p>
           <p class="text-center ml-3 mb-5">大学のテキストをシェアしよう。</p>
           <p class="text-center pt-5 mb-2 display-1">新規登録</p>
           <v-divider></v-divider>
@@ -189,6 +190,9 @@
           })
           .catch(error=>alert(error.message))
       },
+      toHome(){
+        this.$router.push('/');
+      }
     },
   };
 </script>

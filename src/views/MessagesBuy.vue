@@ -11,7 +11,7 @@
         </v-tabs>
       </v-bottom-navigation>
       
-      <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;">
+      <v-flex xs12 sm8 style="margin-bottom: 100px; margin-top: 70px;">
       
         <v-container v-if="myBooks">
           <v-card 
@@ -31,7 +31,9 @@
             </v-btn>
             <v-layout>
               <v-flex xs4 class="pa-2">
-                <v-img v-if="myBook.image" :src="myBook.image"></v-img>
+                <v-img v-if="myBook.image" :src="myBook.image">
+                  <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!myBook.is_public"></v-img>
+                </v-img>
               </v-flex>
               <v-flex xs8>
                 <v-card-title class="subtitle-1 pt-2">{{myBook.title}}</v-card-title>

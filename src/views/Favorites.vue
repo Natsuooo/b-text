@@ -2,7 +2,7 @@
 <v-content>
   <v-layout justify-center>
     <MyPageTabs/>
-    <v-flex xs12 sm6 style="margin-bottom: 100px; margin-top: 70px;">
+    <v-flex xs12 sm8 style="margin-bottom: 100px; margin-top: 70px;">
       
       <v-container v-if="likedBooks">
         <v-card 
@@ -12,8 +12,9 @@
          {{isPublic()}}
           <v-layout>
             <v-flex xs4 class="pa-2" @click="toBookDetail(likedBooks.id);">
-              <v-img v-if="likedBook.google_image" :src="likedBook.google_image"></v-img>
-              <v-img v-if="likedBook.original_image" :src="originalImagePath(likedBook.original_image)"></v-img>
+              <v-img :src="likedBook.image">
+                <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!likedBook.is_public"></v-img>
+              </v-img>
             </v-flex>
             <v-flex xs8>
               <v-card-title class="subtitle-1 pt-2" @click="toBookDetail(likedBook.id);">{{likedBook.title}}</v-card-title>

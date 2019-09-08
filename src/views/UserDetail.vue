@@ -3,7 +3,7 @@
     <v-layout justify-center>
       <LoginBar v-if="!isLogin"/>
       
-      <v-flex xs12 sm6 class="mb-10">
+      <v-flex xs12 sm8 class="mb-10">
         <v-toolbar style="position: fixed; top: 0; left: 0; z-index: 10; width: 100%;">
           <v-btn icon @click="backHome">
             <v-icon>mdi-arrow-left</v-icon>
@@ -112,11 +112,10 @@
            @click="toBookDetail(myBook.id)">
            {{isPublic()}}
             <v-layout>
-              <v-flex xs5 class="pa-2">
-                <v-img v-if="myBook.google_image" :src="myBook.google_image"></v-img>
-                <v-img v-if="myBook.original_image" :src="originalImagePath(myBook.original_image)"></v-img>
+              <v-flex xs4 class="pa-2">
+                <v-img :src="myBook.image"></v-img>
               </v-flex>
-              <v-flex xs7>
+              <v-flex xs8>
                 <v-card-title class="subtitle-1 pt-2">{{myBook.title}}</v-card-title>
                 <v-card-text>
                   <span class="text--primary body-1">{{myBook.price}}円</span><br>
