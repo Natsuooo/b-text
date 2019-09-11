@@ -23,6 +23,7 @@
           class="mb-1"
           autofocus
         ></v-text-field>
+          
         
         <v-divider class="mb-10"></v-divider>
         
@@ -76,7 +77,25 @@
           </v-card>
           </div>
           
-          <v-subheader v-if="message" style="margin-top: 70px;">該当する本が見つかりませんでした。他のキーワードで検索するか、ご自身で情報を入力して下さい。</v-subheader>
+          <v-layout justify-center style="margin-top: 50px;">
+            <v-progress-circular
+              indeterminate
+              color="green"
+              v-show="message"
+              class="hide"
+            ></v-progress-circular>
+          </v-layout>
+          <v-layout justify-center>
+            <v-subheader v-show="message" style="margin-top: 70px;" class="show">
+              <p>
+                該当する本が見つかりませんでした。
+              </p>
+              <p>
+                他のキーワードで検索するか、ご自身で情報を入力して下さい。
+              </p>
+            </v-subheader>
+          </v-layout>
+          
 
         </v-card>
       </v-dialog>
@@ -448,4 +467,54 @@
   };
 </script>
 
-
+<style>
+  .hide{
+    -moz-animation: cssAnimation 0s ease-in 3s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimation 0s ease-in 3s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimation 0s ease-in 3s forwards;
+    /* Opera */
+    animation: cssAnimation 0s ease-in 3s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+  }
+  @keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+  }
+  @-webkit-keyframes cssAnimation {
+      to {
+          width:0;
+          height:0;
+          overflow:hidden;
+      }
+  }
+  
+  .show{
+    -moz-animation: cssAnimationShow 0s ease-in 3s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimationShow 0s ease-in 3s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimationShow 0s ease-in 3s forwards;
+    /* Opera */
+    animation: cssAnimationShow 0s ease-in 3s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    visibility: hidden
+  }
+  @keyframes cssAnimationShow {
+    to {
+      visibility: visible;
+    }
+  }
+  @-webkit-keyframes cssAnimationShow {
+    to {
+      visibility: visible;
+    }
+  }
+  
+</style>

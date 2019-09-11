@@ -73,12 +73,13 @@
               height="auto">
             </v-carousel-item>
           </v-carousel>
+          
           <v-row>
             <v-col 
              v-for="book in search"  
              cols="4" 
              class="pa-1 d-flex d-sm-none" 
-             style="position: relative;">
+             style="position: relative; cursor:pointer;">
               <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
                 </div>
@@ -108,7 +109,7 @@
              v-for="book in search" 
              cols="3" 
              class="pa-1 d-none d-sm-flex d-md-none" 
-             style="position: relative;">
+             style="position: relative; cursor:pointer;">
               <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
                 </div>
@@ -129,7 +130,7 @@
              v-for="book in search" 
              cols="2" 
              class="pa-1 d-none d-md-flex" 
-             style="position: relative;">
+             style="position: relative; cursor:pointer;">
               <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
                 </div>
@@ -149,7 +150,15 @@
           </v-row>
           
         </v-container>
-        <v-layout v-show="!search" justify-center style="margin-top: 50px; margin-bottom: 20px;">
+        <v-layout justify-center style="margin-top: 50px;">
+          <v-progress-circular
+            indeterminate
+            color="green"
+            v-show="!search"
+            class="hide"
+          ></v-progress-circular>
+        </v-layout>
+        <v-layout v-show="!search" justify-center style="margin-top: 50px; margin-bottom: 20px;" class="show">
           <v-subheader>お探しの本は見つかりませんでした。</v-subheader>
         </v-layout>
       </v-flex>
@@ -306,8 +315,59 @@
       }else{
         this.getAllBooks();
       }
+      
     },
   };
 </script>
 
-
+<style>
+  .hide{
+    -moz-animation: cssAnimation 0s ease-in 3s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimation 0s ease-in 3s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimation 0s ease-in 3s forwards;
+    /* Opera */
+    animation: cssAnimation 0s ease-in 3s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+  }
+  @keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+  }
+  @-webkit-keyframes cssAnimation {
+      to {
+          width:0;
+          height:0;
+          overflow:hidden;
+      }
+  }
+  
+  .show{
+    -moz-animation: cssAnimationShow 0s ease-in 3s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimationShow 0s ease-in 3s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimationShow 0s ease-in 3s forwards;
+    /* Opera */
+    animation: cssAnimationShow 0s ease-in 3s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    visibility: hidden
+  }
+  @keyframes cssAnimationShow {
+    to {
+      visibility: visible;
+    }
+  }
+  @-webkit-keyframes cssAnimationShow {
+    to {
+      visibility: visible;
+    }
+  }
+  
+</style>

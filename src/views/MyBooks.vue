@@ -32,7 +32,16 @@
         </v-card>
       </v-container>
       
-      <v-layout v-if="!is_public" justify-center style="margin-top: -10px; margin-bottom: 20px;">
+      <v-layout justify-center style="margin-top: 50px;">
+        <v-progress-circular
+          indeterminate
+          color="green"
+          v-show="!is_public"
+          class="hide"
+        ></v-progress-circular>
+      </v-layout>
+      
+      <v-layout v-show="!is_public" justify-center style="margin-top: -10px; margin-bottom: 20px;" class="show">
         <v-subheader>出品中の本はありません。</v-subheader>
       </v-layout>
       
@@ -63,7 +72,16 @@
         
       </v-container>
       
-      <v-layout v-if="!is_finished" justify-center>
+      <v-layout justify-center style="margin-top: 50px;">
+        <v-progress-circular
+          indeterminate
+          color="green"
+          v-show="!is_finished"
+          class="hide"
+        ></v-progress-circular>
+      </v-layout>
+      
+      <v-layout v-if="!is_finished" justify-center class="show">
         <v-subheader>出品を終了した本はありません。</v-subheader>
       </v-layout>
       
@@ -176,4 +194,54 @@
   };
 </script>
 
-
+<style>
+  .hide{
+    -moz-animation: cssAnimation 0s ease-in 1s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimation 0s ease-in 1s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimation 0s ease-in 1s forwards;
+    /* Opera */
+    animation: cssAnimation 0s ease-in 1s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+  }
+  @keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+  }
+  @-webkit-keyframes cssAnimation {
+      to {
+          width:0;
+          height:0;
+          overflow:hidden;
+      }
+  }
+  
+  .show{
+    -moz-animation: cssAnimationShow 0s ease-in 1s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimationShow 0s ease-in 1s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimationShow 0s ease-in 1s forwards;
+    /* Opera */
+    animation: cssAnimationShow 0s ease-in 1s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    visibility: hidden
+  }
+  @keyframes cssAnimationShow {
+    to {
+      visibility: visible;
+    }
+  }
+  @-webkit-keyframes cssAnimationShow {
+    to {
+      visibility: visible;
+    }
+  }
+  
+</style>

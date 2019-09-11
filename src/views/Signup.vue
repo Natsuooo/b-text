@@ -161,7 +161,7 @@
             this.uid=obj.user.uid;
             this.setUserDetail();
           })
-          .catch(error=>alert(error.message))
+//          .catch(error=>alert(error.message))
       },
       googleSignUp: function(){
         var provider=new firebase.auth.GoogleAuthProvider()
@@ -170,7 +170,7 @@
             this.uid=obj.user.uid;
             this.setUserDetail();
           })
-          .catch(error=>alert(error.message))
+//          .catch(error=>alert(error.message))
       },
       twitterSignUp: function(){
         var provider=new firebase.auth.TwitterAuthProvider()
@@ -179,7 +179,7 @@
             this.uid=obj.user.uid;
             this.setUserDetail();
           })
-          .catch(error=>alert(error.message))
+//          .catch(error=>alert(error.message))
       },
       facebookSignUp: function(){
         var provider = new firebase.auth.FacebookAuthProvider();
@@ -188,7 +188,7 @@
             this.uid=obj.user.uid;
             this.setUserDetail();
           })
-          .catch(error=>alert(error.message))
+//          .catch(error=>alert(error.message))
       },
       toHome(){
         this.$router.push('/');

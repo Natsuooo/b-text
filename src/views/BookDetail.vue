@@ -26,11 +26,11 @@
           
           <v-layout justify-center class="mb-5">
             <div v-if="isLiked(bookDetail.id)" @click="registerLike(bookDetail.id, bookDetail.liked++);">
-              <v-icon style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+              <v-icon style="margin-left: 3px; margin-right: 3px; cursor:pointer;">mdi-heart-outline</v-icon>
               <span class="body-1">{{bookDetail.liked}}</span>
             </div>
             <div v-else @click="deleteLike(bookDetail.id, bookDetail.liked--);">
-              <v-icon color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+              <v-icon color="pink" style="margin-left: 3px; margin-right: 3px; cursor:pointer;">mdi-heart</v-icon>
               <span class="body-1">{{bookDetail.liked}}</span>
             </div>
           </v-layout>
