@@ -2,19 +2,21 @@
   <v-content>
     <v-layout justify-center>
       <v-flex xs12 sm6>
-        <v-card class="pa-5">
+        <v-card class="pa-5 my-5">
           <v-img
             :src="require('../assets/images/favicon_520_transparent.png')"
             class="my-3"
             contain
             height="70"
             @click="toHome()"
+            style="cursor: pointer;"
           ></v-img>
           <p class="display-1 text-center" style="font-family: 'Comfortaa', cursive!important;" @click="toHome()">B-text</p>
           <p class="text-center ml-3 mb-5">大学のテキストをシェアしよう。</p>
           <p class="text-center pt-5 mb-2 display-1">新規登録</p>
           <v-divider></v-divider>
-          <v-form v-model="valid" class="mt-5">
+          <v-alert type="error" v-if="alreadyExist" class="mt-5">このメールアドレスは既にご登録されています。ログイン画面からログインしましょう。</v-alert>
+          <v-form v-model="valid" class="mt-5" onSubmit="return false;">
             <v-container grid-list-xl>
               <v-layout wrap>
                 <v-flex
@@ -133,6 +135,7 @@
       ],
       userDetail: {},
       uid: '',
+      alreadyExist: false,
     }),
     components: {
       LoginBar,
@@ -161,7 +164,11 @@
             this.uid=obj.user.uid;
             this.setUserDetail();
           })
-//          .catch(error=>alert(error.message))
+          .catch(error=>{
+//            alert(error.message)
+          console.log(error)
+            if(error.message=="The email address is already in use by another account."){this.alreadyExist=true;}
+        });
       },
       googleSignUp: function(){
         var provider=new firebase.auth.GoogleAuthProvider()

@@ -11,13 +11,13 @@
          >
          {{isPublic()}}
           <v-layout>
-            <v-flex xs4 class="pa-2" @click="toBookDetail(likedBooks.id);">
+            <v-flex xs4 class="pa-2" @click="toBookDetail(likedBook.id);">
               <v-img :src="likedBook.image">
                 <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!likedBook.is_public"></v-img>
               </v-img>
             </v-flex>
             <v-flex xs8>
-              <v-card-title class="subtitle-1 pt-2" @click="toBookDetail(likedBook.id);">{{likedBook.title}}</v-card-title>
+              <v-card-title class="subtitle-1 pt-2" @click="toBookDetail(likedBook.id);" style="cursor: pointer;">{{likedBook.title}}</v-card-title>
               <v-card-text @click="toBookDetail(likedBook.id);">
                 <span class="text--primary body-1">{{likedBook.price}}円</span><br>
                 <span class="caption"> 出品日: {{likedBook.updated_at.slice(0, 10)}}</span>

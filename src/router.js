@@ -15,6 +15,7 @@ import UserDetail from './views/UserDetail.vue'
 import MessagesUsers from './views/MessagesUsers.vue'
 import MessagesMyBooks from './views/MessagesMyBooks.vue'
 import MessagesBuy from './views/MessagesBuy.vue'
+import PasswordReset from './views/PasswordReset.vue'
 
 import store from './store'
 
@@ -43,6 +44,11 @@ var router = new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/password_reset',
+      name: 'passwordReset',
+      component: PasswordReset
     },
     {
       path: '/sell',

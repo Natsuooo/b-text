@@ -13,17 +13,19 @@
           検索機能を使って、情報を入力してみましょう。
         </v-alert>
         
-        <v-text-field
-          color="green accent-4"
-          filled          
-          v-model="keywords"
-          label="タイトル・著者名"
-          append-outer-icon="mdi-magnify"
-          @click:append-outer="search"
-          class="mb-1"
-          autofocus
-        ></v-text-field>
-          
+        <v-form @submit="search" onSubmit="return false;">
+          <v-text-field
+            color="green accent-4"
+            filled          
+            v-model="keywords"
+            label="タイトル・著者名"
+            append-outer-icon="mdi-magnify"
+            @click:append-outer="search"
+            class="mb-1"
+            autofocus
+          ></v-text-field>
+        </v-form>
+        
         
         <v-divider class="mb-10"></v-divider>
         

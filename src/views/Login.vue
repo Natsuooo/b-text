@@ -2,20 +2,23 @@
   <v-content>
     <v-layout justify-center>
       <v-flex xs12 sm6>
-        <v-card class="pa-5">
+        <v-card class="pa-5 my-5 mx-3">
          
           <v-img
             :src="require('../assets/images/favicon_520_transparent.png')"
             class="my-3"
             contain
             height="70"
-            @click="toHome()"            
+            @click="toHome()"  
+            style="cursor: pointer;"          
           ></v-img>
           <p class="display-1 text-center" style="font-family: 'Comfortaa', cursive!important;" @click="toHome()">B-text</p>
           <p class="text-center ml-3 mb-5">大学のテキストをシェアしよう。</p>
           <p class="text-center pt-5 mb-2 display-1">ログイン</p>
           <v-divider></v-divider>
-          <v-form v-model="valid" class="mt-5">
+          <v-alert type="error" v-if="unsignedMessage" class="mt-5">未登録のメールアドレスです。サインアップ画面から、新しいアカウントを作成しましょう。</v-alert>
+          <v-alert type="error" v-if="invalidPassword" class="mt-5">パスワードが適切ではありません。</v-alert>
+          <v-form v-model="valid" class="mt-5" @submit="login" onSubmit="return false;">
             <v-container grid-list-xl>
               <v-layout wrap>
                 <v-flex
@@ -88,7 +91,7 @@
                   </v-btn>
                   <p class="text-center pt-5 mt-5 grey--text text--darken-1">アカウントをお持ちではありませんか？</p>
                   <p class="text-center"><router-link to="/signup" class="green--text text--accent-4" style="text-decoration:none;">アカウントを作成</router-link></p>
-                  <p class="text-center"><router-link to="/login" class="green--text text--accent-4" style="text-decoration:none;">パスワードをお忘れの方</router-link></p>
+                  <p class="text-center"><router-link to="/password_reset" class="green--text text--accent-4" style="text-decoration:none;">パスワードをお忘れの方</router-link></p>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -118,6 +121,8 @@
       ],
       uid: '',
       userDetail: {},
+      unsignedMessage: false,
+      invalidPassword: false
     }),
     components: {
       LoginBar,
@@ -146,7 +151,11 @@
             this.uid=obj.user.uid;
             this.setUserDetail();
             })
-//          .catch(error=>alert(error.message))
+          .catch(error=>{
+            if(error.message=="There is no user record corresponding to this identifier. The user may have been deleted."){this.unsignedMessage=true;}
+            if(error.message=="The password is invalid or the user does not have a password."){this.invalidPassword=true;}
+            console.log(error.message)
+        })
       },
       googleSignUp(){
         var provider=new firebase.auth.GoogleAuthProvider()

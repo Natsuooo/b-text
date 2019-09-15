@@ -5,7 +5,7 @@
         <v-btn icon @click="back">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
-        <v-toolbar-title @click="toUserDetail">{{otherUsersDetail.username}}</v-toolbar-title>
+        <v-toolbar-title @click="toUserDetail" style="cursor: pointer;">{{otherUsersDetail.username}}</v-toolbar-title>
       </v-toolbar>
       <v-flex xs12 sm8 style="margin-bottom: 60px; margin-top: 40px;">
       
@@ -104,6 +104,8 @@
       message: '',
       otherUsersDetail: {},
       uploadedImage: '',
+      address: '',
+      username: '',
     }),
     components: {
       LoginBar,
@@ -157,12 +159,7 @@
         if(this.message!=""){
           
           var dt=new Date();
-          console.log(dt)
-          console.log(dt.getMonth())
-          console.log(dt.getDate())
-          console.log(dt.getHours())
           var created_at=dt.toLocaleString();
-          console.log(created_at)
           var month=created_at.slice(0,1);
 //          if(date!="1"){
 //            month="0"+month;
@@ -193,7 +190,6 @@
           if(minutes.length==1){
             minutes="0"+minutes;
           }
-          console.log(month)
           var created_at_js=year+"-"+month+"-"+date+" "+hours+":"+minutes;
           
           this.messages.push({book_id: this.$route.params.book_id, from_user_id: this.userDetail.id, to_user_id: this.$route.params.user_id, content: this.message, created_at: created_at_js});
@@ -210,6 +206,17 @@
             }
           };
           this.$axios.post('https://b-text-api.herokuapp.com/messages/send', formData, config);
+          
+          
+          /* SendGridでメール通知 */
+          var formData=new FormData()
+          formData.append('book_id', this.$route.params.book_id);
+          formData.append('user_id', this.userDetail.id);
+          formData.append('from_username', this.userDetail.username);
+          formData.append('to_username', this.otherUsersDetail.username);
+          formData.append('address', this.otherUsersDetail.email);
+          formData.append('message', this.message);
+          this.$axios.post("https://b-text-api.herokuapp.com/mail/message", formData);
           this.message='';
           this.$refs.target.scrollIntoView(false);
           }
@@ -242,7 +249,7 @@
       this.isLogin=this.$store.getters.isLogin;
       this.user=this.$store.getters.user;
       this.userDetail=this.$store.getters.userDetail;
-      this.username=this.userDetail.username;
+//      this.username=this.userDetail.username;
       this.university=this.userDetail.university;
       this.getMessages();
       this.getTime();
@@ -252,7 +259,6 @@
     },
     mounted(){
       this.$refs.target.scrollIntoView(true);
-      console.log(this.$refs.target);
     }
   };
 </script>

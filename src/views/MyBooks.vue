@@ -6,6 +6,12 @@
       <v-alert type="success" v-if="this.$route.params.newBook">
         「{{this.$route.params.newBook}}」を出品しました。
       </v-alert>
+      <v-alert type="success" v-if="this.$route.params.deleteBook">
+        「{{this.$route.params.deleteBook}}」を削除しました。
+      </v-alert>
+      <v-alert type="success" v-if="this.$route.params.updateBook">
+        「{{this.$route.params.updateBook}}」の内容を変更しました。
+      </v-alert>
       
       <v-subheader>出品中の本</v-subheader>
       
@@ -13,6 +19,7 @@
         <v-card 
          v-for="myBook in myBooks"
          v-if="myBook.is_public"
+         v-show="!myBook.is_deleted"
          class="mb-3"
          @click="toBookDetail(myBook.id)">
          {{isPublic()}}
@@ -51,16 +58,17 @@
         <v-card 
          v-for="myBook in myBooks"
          v-if="!myBook.is_public"
+         v-show="!myBook.is_deleted"
          class="mb-3"
          @click="toBookDetail(myBook.id)">
          {{isFinished()}}
           <v-layout>
-            <v-flex xs5 class="pa-2">
+            <v-flex xs4 class="pa-2">
               <v-img :src="myBook.image">
                 <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;"></v-img>
               </v-img>
             </v-flex>
-            <v-flex xs7>
+            <v-flex xs8>
               <v-card-title class="subtitle-1 pt-2">{{myBook.title}}</v-card-title>
               <v-card-text>
                 <span class="text--primary body-1">{{myBook.price}}円</span><br>

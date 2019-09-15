@@ -105,6 +105,39 @@
                 <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!book.is_public"></v-img>
               </v-img>
             </v-col>
+            
+            <v-col 
+             v-for="book in dummyBooks"  
+             cols="4" 
+             class="pa-1 d-flex d-sm-none" 
+             style="position: relative; cursor:pointer;">
+              <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
+                  <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
+                </div>
+                <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
+                <span v-if="isLogin">
+                   <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                    <div v-else @click="deleteLike(book.id, book.liked--);">
+                      <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                  <span v-else>
+                    <div>
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                </div>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)">
+                <v-img :src="require('../assets/images/sold.png')" style="width: 70%; margin-top: -1px; margin-left: -1px;" v-show="!book.is_public"></v-img>
+              </v-img>
+            </v-col>
+            
+            
             <v-col 
              v-for="book in search" 
              cols="3" 
@@ -114,18 +147,56 @@
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
                 </div>
                 <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
-                 <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
-                    <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
-                    <span class="body-2">{{book.liked}}</span>
-                  </div>
-                  <div v-else @click="deleteLike(book.id, book.liked--);">
-                    <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
-                    <span class="body-2">{{book.liked}}</span>
-                  </div>
-                  
+                <span v-if="isLogin">
+                   <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                    <div v-else @click="deleteLike(book.id, book.liked--);">
+                      <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                  <span v-else>
+                    <div>
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
                 </div>
               <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
             </v-col>
+            
+            
+            <v-col 
+             v-for="book in dummyBooks" 
+             cols="3" 
+             class="pa-1 d-none d-sm-flex d-md-none" 
+             style="position: relative; cursor:pointer;">
+              <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
+                  <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
+                </div>
+                <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
+                <span v-if="isLogin">
+                   <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                    <div v-else @click="deleteLike(book.id, book.liked--);">
+                      <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                  <span v-else>
+                    <div>
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                </div>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
+            </v-col>
+            
             <v-col 
              v-for="book in search" 
              cols="2" 
@@ -135,18 +206,56 @@
                   <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
                 </div>
                 <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
-                 <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
-                    <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
-                    <span class="body-2">{{book.liked}}</span>
-                  </div>
-                  <div v-else @click="deleteLike(book.id, book.liked--);">
-                    <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
-                    <span class="body-2">{{book.liked}}</span>
-                  </div>
-                  
+                <span v-if="isLogin">
+                   <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                    <div v-else @click="deleteLike(book.id, book.liked--);">
+                      <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                  <span v-else>
+                    <div>
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
                 </div>
               <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
             </v-col>
+            
+            <v-col 
+             v-for="book in dummyBooks" 
+             cols="2" 
+             class="pa-1 d-none d-md-flex" 
+             style="position: relative; cursor:pointer;">
+              <div style="position: absolute; bottom: 30px; left: 0; width: 90%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; z-index: 5;" class="white mb-1">
+                  <span class="subtitle-1" style="margin-left: 5px;">{{book.price}}円</span>
+                </div>
+                <div style="position: absolute; bottom: 0px; left: 0; width: 60%; opacity: 0.8; border-bottom-right-radius: 20px; border-top-right-radius: 20px; padding: 1px; z-index: 5;" class="white mb-1">
+                <span v-if="isLogin">
+                   <div v-if="isLiked(book.id)" @click="registerLike(book.id, book.liked++);">
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                    <div v-else @click="deleteLike(book.id, book.liked--);">
+                      <v-icon small color="pink" style="margin-left: 3px; margin-right: 3px;">mdi-heart</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                  <span v-else>
+                    <div>
+                      <v-icon small style="margin-left: 3px; margin-right: 3px;">mdi-heart-outline</v-icon>
+                      <span class="body-2">{{book.liked}}</span>
+                    </div>
+                  </span>
+                </div>
+              <v-img :src="book.image" style="position: relative; width: 100%;" @click="bookDetail(book.id)"></v-img>
+            </v-col>
+            
+            
           </v-row>
           
         </v-container>
@@ -199,6 +308,7 @@
       array: [],
       keyword: '',
       isSearchedBooks: true,
+      dummyBooks: {},
     }),
     components: {
       LoginBar,
@@ -211,9 +321,13 @@
             this.books=res.data
           });
       },
-//      originalImagePath(original_image){
-//        return "https://b-text-api.herokuapp.com/book_images/"+original_image
-//      },
+      getDummyBooks(){
+        this.$axios.get('https://b-text-api.herokuapp.com/books', {params: {university: 'dummy'}})
+          .then(res=>{
+            this.dummyBooks=res.data;
+            console.log(this.dummyBooks)
+          });
+      },
       bookDetail(id){
         this.$router.push({name: 'bookdetail', params: {id: id}});
       },
@@ -285,7 +399,7 @@
           .then(res=>{
             this.books=res.data
           });
-      }
+      },
     },
     computed: {
       search(){
@@ -312,6 +426,7 @@
       if(this.isLogin){
         this.getBooks();
         this.getLikes();
+        this.getDummyBooks();
       }else{
         this.getAllBooks();
       }

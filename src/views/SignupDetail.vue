@@ -129,7 +129,8 @@
         is_signup: true,
         userDetail: {},
         sns_image: '',
-        
+        address: '',
+        email: '',
       }
     },
     components: {
@@ -238,10 +239,13 @@
         var user = firebase.auth().currentUser;
         var uid=user.uid;
         this.uid=uid;
+        this.email=user.email;
         var formData=new FormData();
         formData.append("uid", uid);
+        formData.append("email", this.email);
         formData.append("username", username);
         formData.append("university", university);
+//        formData.append("university", 'dummy');
         var profile_image='';
         if(!this.isProfileImageUploaded){
           profile_image=url;
@@ -262,6 +266,11 @@
           .post('https://b-text-api.herokuapp.com/signup', formData, config).then(res=>{
           this.setUserDetail();
         })
+        
+        var formData=new FormData()
+        formData.append('username', this.name);
+        formData.append('address', this.address);
+        this.$axios.post("https://b-text-api.herokuapp.com/mail/new_user", formData);
       }
     },
     
@@ -270,6 +279,7 @@
       if (user) {
         this.name = user.displayName;
         this.photoURL = user.photoURL;
+        this.address=user.email;
         if(user.photoURL){
           this.isPhotoURL = true
         }
